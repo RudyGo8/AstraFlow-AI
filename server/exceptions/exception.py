@@ -16,7 +16,7 @@ class LoginException(Exception):
         """
         初始化登录异常。
 
-        :param message: 异常消息，默认为 "登录失败"
+        :param message: 异常消息,默认为 "登录失败"
         :param data: 异常相关的数据
         """
         self.message = message
@@ -41,7 +41,7 @@ class AuthException(Exception):
         """
         初始化令牌异常。
 
-        :param message: 异常消息，默认为 "身份验证失败"
+        :param message: 异常消息,默认为 "身份验证失败"
         :param data: 异常相关的数据
         """
         self.message = message
@@ -66,7 +66,7 @@ class PermissionException(Exception):
         """
         初始化权限异常。
 
-        :param message: 异常消息，默认为 "权限不足"
+        :param message: 异常消息,默认为 "权限不足"
         :param data: 异常相关的数据
         """
         self.message = message
@@ -91,7 +91,7 @@ class ServiceException(Exception):
         """
         初始化服务异常。
 
-        :param message: 异常消息，默认为 "服务异常"
+        :param message: 异常消息,默认为 "服务异常"
         :param data: 异常相关的数据
         """
         self.message = message
@@ -109,14 +109,14 @@ class ServiceException(Exception):
 class ServiceWarning(Exception):
     """
     自定义服务警告。
-    - 用于处理服务层逻辑中的警告情况（非致命错误）。
+    - 用于处理服务层逻辑中的警告情况(非致命错误)。
     """
 
     def __init__(self, message: str = "服务警告", data: Optional[Any] = None):
         """
         初始化服务警告。
 
-        :param message: 警告消息，默认为 "服务警告"
+        :param message: 警告消息,默认为 "服务警告"
         :param data: 警告相关的数据
         """
         self.message = message
@@ -141,7 +141,7 @@ class ModelValidatorException(Exception):
         """
         初始化模型校验异常。
 
-        :param message: 异常消息，默认为 "数据校验失败"
+        :param message: 异常消息,默认为 "数据校验失败"
         :param data: 异常相关的数据
         """
         self.message = message

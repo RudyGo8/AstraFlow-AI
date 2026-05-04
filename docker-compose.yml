@@ -14,7 +14,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - ./docker/mysql/data:/var/lib/mysql
+      - ./docker/mysql/fva_data:/var/lib/mysql
     networks:
       - fva-network
     healthcheck:
@@ -32,7 +32,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./docker/redis/data:/data
+      - ./docker/fva_redis/data:/data
     networks:
       - fva-network
     healthcheck:

@@ -28,7 +28,7 @@ def normalize_api_method(api_method) -> str:
             api_method = [api_method]
     
     if isinstance(api_method, list):
-        # 统一使用字母排序，确保一致性
+        # 统一使用字母排序,确保一致性
         return ",".join(sorted(api_method))
     else:
         return api_method or "GET"
@@ -63,24 +63,24 @@ async def delete_permission(request: Request, id: str = Path(description="权限
         # 移除角色权限
         await delete_permission_recursive(permission_id=permission.id)
         await clear_user_cache(request)
-        return ResponseUtil.success(msg="删除权限成功！")
+        return ResponseUtil.success(msg="删除权限成功!")
     else:
-        return ResponseUtil.error(msg="删除权限失败，权限不存在！")
+        return ResponseUtil.error(msg="删除权限失败,权限不存在!")
 
 
 async def delete_permission_recursive(permission_id: str):
     """
-    递归删除权限及其附属权限（同时从 Casbin 移除）
+    递归删除权限及其附属权限(同时从 Casbin 移除)
     :param permission_id: 权限ID
     :return:
     """
     # 获取权限信息
     permission = await SystemPermission.get_or_none(id=permission_id, is_del=False)
     if permission:
-        # 从 Casbin 移除该权限（所有角色）
+        # 从 Casbin 移除该权限(所有角色)
         perm_id = str(permission.id)
         if permission.menu_type == PermissionType.MENU:
-            # 获取所有策略，移除包含该权限的
+            # 获取所有策略,移除包含该权限的
             all_policies = CasbinEnforcer.get_all_policies()
             for policy in all_policies:
                 if len(policy) >= 3 and policy[1] == perm_id and policy[2] == "menu":
@@ -110,15 +110,15 @@ async def delete_permission_recursive(permission_id: str):
 @Auth(permission_list=["permission:btn:update", "PUT,POST:/permission/update/*"])
 async def update_permission(request: Request, params: AddPermissionParams, id: str = Path(description="权限ID"), ):
     if permission := await SystemPermission.get_or_none(id=id, is_del=False):
-        # 使用 exclude_unset=True 只获取用户实际传递的字段，允许设置 null 值
+        # 使用 exclude_unset=True 只获取用户实际传递的字段,允许设置 null 值
         params_dict = params.model_dump(exclude_unset=True)
         await permission.update_from_dict(params_dict)
         await permission.save()
         # 更新用户信息缓存
         await clear_user_cache(request)
-        return ResponseUtil.success(msg="更新权限成功！")
+        return ResponseUtil.success(msg="更新权限成功!")
     else:
-        return ResponseUtil.error(msg="更新权限失败，权限不存在！")
+        return ResponseUtil.error(msg="更新权限失败,权限不存在!")
 
 
 @permissionAPI.get("/info/{id}", response_model=GetPermissionInfoResponse, response_class=JSONResponse,
@@ -127,7 +127,7 @@ async def update_permission(request: Request, params: AddPermissionParams, id: s
 @Auth(permission_list=["permission:btn:info", "GET:/permission/info/*"])
 async def get_permission(request: Request, id: str = Path(description="权限ID")):
     if permission := await SystemPermission.get_or_none(id=id, is_del=False):
-        return ResponseUtil.success(msg="查询权限详情成功！", data={
+        return ResponseUtil.success(msg="查询权限详情成功!", data={
             "id": permission.id,
             "created_at": permission.created_at,
             "updated_at": permission.updated_at,
@@ -160,7 +160,7 @@ async def get_permission(request: Request, id: str = Path(description="权限ID"
             "remark": permission.remark
         })
     else:
-        return ResponseUtil.error(msg="查询权限详情失败，权限不存在！")
+        return ResponseUtil.error(msg="查询权限详情失败,权限不存在!")
 
 
 @permissionAPI.get("/list", response_model=GetPermissionListResponse, response_class=JSONResponse,
@@ -183,7 +183,7 @@ async def get_permission_list(
         api_method: Optional[str] = Query(default=None, description="请求方法"),
         current_user: dict = Depends(AuthController.get_current_user)
 ):
-    # 获取当前用户类型，根据用户类型过滤权限
+    # 获取当前用户类型,根据用户类型过滤权限
     # user_type: 0=超级管理员, 1=管理员, 2=部门管理员, 3=普通用户
     user_type = current_user.get("user_type", 3)
     
@@ -255,12 +255,12 @@ async def get_permission_tree(
         request: Request,
         current_user: dict = Depends(AuthController.get_current_user)
 ):
-    """获取权限树形结构，包含菜单和按钮权限"""
+    """获取权限树形结构,包含菜单和按钮权限"""
     
-    # 获取当前用户类型，根据用户类型过滤权限
+    # 获取当前用户类型,根据用户类型过滤权限
     user_type = current_user.get("user_type", 3)
     
-    # 获取所有权限数据，根据用户类型过滤
+    # 获取所有权限数据,根据用户类型过滤
     permissions = await SystemPermission.filter(
         is_del=False,
         min_user_type__gte=user_type  # 只能看到 min_user_type >= 当前用户类型的权限
@@ -330,7 +330,7 @@ async def get_menu_buttons(
 ):
     """获取指定菜单下的按钮权限列表"""
     
-    # 获取当前用户类型，根据用户类型过滤权限
+    # 获取当前用户类型,根据用户类型过滤权限
     user_type = current_user.get("user_type", 3)
     
     buttons = await SystemPermission.filter(
@@ -398,7 +398,7 @@ async def delete_button_permission(
     if permission := await SystemPermission.get_or_none(id=id, menu_type=1, is_del=False):
         await permission.update(is_del=True)
         
-        # 从 Casbin 移除该按钮权限（所有角色）
+        # 从 Casbin 移除该按钮权限(所有角色)
         all_policies = CasbinEnforcer.get_all_policies()
         for policy in all_policies:
             if len(policy) >= 3 and policy[1] == id and policy[2] == "button":
@@ -407,7 +407,7 @@ async def delete_button_permission(
         # 清除用户缓存
         await clear_user_cache(request)
         return ResponseUtil.success(msg="删除按钮权限成功")
-    return ResponseUtil.error(msg="删除按钮权限失败，权限不存在")
+    return ResponseUtil.error(msg="删除按钮权限失败,权限不存在")
 
 
 @permissionAPI.put("/button/update/{id}", response_model=BaseResponse, response_class=JSONResponse, summary="更新按钮权限")
@@ -423,7 +423,7 @@ async def update_button_permission(
     """更新按钮权限"""
     
     if permission := await SystemPermission.get_or_none(id=id, menu_type=1, is_del=False):
-        # 使用 exclude_unset=True 只获取用户实际传递的字段，允许设置 null 值
+        # 使用 exclude_unset=True 只获取用户实际传递的字段,允许设置 null 值
         params_dict = params.model_dump(exclude_unset=True)
         params_dict["menu_type"] = 1  # 确保是按钮类型
         
@@ -433,7 +433,7 @@ async def update_button_permission(
         # 清除用户缓存
         await clear_user_cache(request)
         return ResponseUtil.success(msg="更新按钮权限成功")
-    return ResponseUtil.error(msg="更新按钮权限失败，权限不存在")
+    return ResponseUtil.error(msg="更新按钮权限失败,权限不存在")
 
 
 async def clear_user_cache(request: Request):
@@ -455,9 +455,9 @@ class AddApiPermissionParams(BaseModel):
     """添加接口权限参数"""
     parent_id: Optional[str] = None
     title: str  # 权限名称
-    api_path: str  # 接口路径，如 /api/user/*
-    api_method: List[str]  # 请求方法列表，如 ["GET", "POST", "PUT", "DELETE"]
-    data_scope: int = 4  # 数据范围，默认仅本人
+    api_path: str  # 接口路径,如 /api/user/*
+    api_method: List[str]  # 请求方法列表,如 ["GET", "POST", "PUT", "DELETE"]
+    data_scope: int = 4  # 数据范围,默认仅本人
     min_user_type: int = 3  # 最低用户类型
     authMark: Optional[str] = None  # 权限标识
     remark: Optional[str] = None  # 备注
@@ -482,7 +482,7 @@ async def get_api_permission_list(
         current_user: dict = Depends(AuthController.get_current_user)
 ):
     """获取所有接口类型的权限"""
-    # 获取当前用户类型，根据用户类型过滤权限
+    # 获取当前用户类型,根据用户类型过滤权限
     user_type = current_user.get("user_type", 3)
     
     filterArgs = {"menu_type": PermissionType.API, "min_user_type__gte": user_type}
@@ -590,7 +590,7 @@ async def delete_api_permission(
     if not permission:
         return ResponseUtil.error(msg="接口权限不存在")
     
-    # 从 Casbin 移除该 API 权限（所有角色）
+    # 从 Casbin 移除该 API 权限(所有角色)
     if permission.api_path:
         all_policies = CasbinEnforcer.get_all_policies()
         for policy in all_policies:

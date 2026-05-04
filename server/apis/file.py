@@ -17,26 +17,26 @@ from utils.log import logger
 
 fileAPI = APIRouter(prefix="/file")
 
-# 文件访问路由（无前缀，用于静态文件访问）
+#  # (description)
 fileAccessAPI = APIRouter()
 
 
-# ==================== 公开接口（文件访问） ====================
+# ====================  # (description)
 
-@fileAccessAPI.get("/files/{path:path}", response_class=FileResponse, summary="访问本地文件")
+@fileAccessAPI.get("/files/{path:path}", response_class=FileResponse, summary="")
 async def get_local_file(request: Request, path: str):
-    """访问本地存储的文件"""
+    """Serve local storage files"""
     dynamic_config = request.app.state.dynamic_config
     base_path = await dynamic_config.get("upload_local_path", "uploads")
     file_path = Path(base_path) / path
     
     if not file_path.exists():
-        return JSONResponse(status_code=404, content={"success": False, "msg": "文件不存在"})
+        return JSONResponse(status_code=404, content={"success": False, "msg": "File not found"})
     
     return FileResponse(file_path)
 
 
-# ==================== 需要认证的接口 ====================
+# ====================  # (description)
 
 authFileAPI = APIRouter(
     prefix="/file",
@@ -45,7 +45,7 @@ authFileAPI = APIRouter(
 
 
 class FileSearchParams(BaseModel):
-    """文件搜索参数"""
+    """File search parameters"""
     page: int = 1
     pageSize: int = 20
     name: Optional[str] = None
@@ -54,19 +54,19 @@ class FileSearchParams(BaseModel):
     storage_type: Optional[str] = None
 
 
-@authFileAPI.get("/list", response_class=JSONResponse, response_model=BaseResponse, summary="获取文件列表")
-@Log(title="获取文件列表", operation_type=OperationType.SELECT)
+@authFileAPI.get("/list", response_class=JSONResponse, response_model=BaseResponse, summary="")
+@Log(title="", operation_type=OperationType.SELECT)
 @Auth(permission_list=["file:btn:list", "GET:/file/list"])
 async def get_file_list(
     request: Request,
-    page: int = Query(default=1, description="当前页码"),
-    pageSize: int = Query(default=20, description="每页数量"),
-    name: Optional[str] = Query(default=None, description="文件名"),
-    file_type: Optional[str] = Query(default=None, description="文件类型"),
-    folder: Optional[str] = Query(default=None, description="文件夹"),
-    storage_type: Optional[str] = Query(default=None, description="存储类型"),
+    page: int = Query(default=1, description=""),
+    pageSize: int = Query(default=20, description=""),
+    name: Optional[str] = Query(default=None, description="File name"),
+    file_type: Optional[str] = Query(default=None, description=""),
+    folder: Optional[str] = Query(default=None, description="Folder"),
+    storage_type: Optional[str] = Query(default=None, description=""),
 ):
-    """获取文件列表"""
+    """Get file list"""
     filter_args = {"is_del": False}
     
     if name:
@@ -95,41 +95,41 @@ async def get_file_list(
     })
 
 
-@authFileAPI.post("/upload", response_class=JSONResponse, response_model=BaseResponse, summary="上传文件")
-@Log(title="上传文件", operation_type=OperationType.INSERT)
+@authFileAPI.post("/upload", response_class=JSONResponse, response_model=BaseResponse, summary="")
+@Log(title="", operation_type=OperationType.INSERT)
 @Auth(permission_list=["file:btn:upload", "POST:/file/upload"])
 async def upload_file(
     request: Request,
-    file: UploadFile = File(..., description="上传的文件"),
-    folder: str = Query(default="", description="文件夹路径"),
+    file: UploadFile = File(..., description="File"),
+    folder: str = Query(default="", description="Folder"),
     current_user: dict = Depends(AuthController.get_current_user)
 ):
-    """上传文件"""
+    """Upload file"""
     dynamic_config = request.app.state.dynamic_config
     
-    # 检查文件大小
+    #  # (description)
     max_size = await dynamic_config.get_int("upload_max_size", 100)
     content = await file.read()
-    await file.seek(0)  # 重置文件指针
+    await file.seek(0)  # 
     
     if len(content) > max_size * 1024 * 1024:
-        return ResponseUtil.error(msg=f"文件大小超过限制（最大{max_size}MB）")
+        return ResponseUtil.error(msg=f"File size exceeds {max_size}MB")
     
-    # 检查文件扩展名
+    #  # (description)
     ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else ""
     allowed_extensions = await dynamic_config.get_list("upload_allowed_extensions")
     if allowed_extensions and ext not in allowed_extensions:
-        return ResponseUtil.error(msg=f"不支持的文件类型: {ext}")
+        return ResponseUtil.error(msg=f": {ext}")
     
     try:
-        # 获取存储服务
+        #  # (description)
         storage = await StorageFactory.create(dynamic_config)
         storage_type = await dynamic_config.get("upload_storage_type", "local")
         
-        # 上传文件
+        #  # (description)
         result = await storage.upload(file, folder)
         
-        # 保存文件记录
+        #  # (description)
         file_record = await SystemFile.create(
             name=file.filename,
             key=result["key"],
@@ -145,7 +145,7 @@ async def upload_file(
             uploader_name=current_user.get("username")
         )
         
-        return ResponseUtil.success(msg="上传成功", data={
+        return ResponseUtil.success(msg="", data={
             "id": file_record.id,
             "name": file_record.name,
             "url": file_record.url,
@@ -154,20 +154,20 @@ async def upload_file(
             "file_type": file_record.file_type
         })
     except Exception as e:
-        logger.error(f"文件上传失败: {e}")
-        return ResponseUtil.error(msg=f"上传失败: {str(e)}")
+        logger.error(f": {e}")
+        return ResponseUtil.error(msg=f": {str(e)}")
 
 
-@authFileAPI.post("/upload/batch", response_class=JSONResponse, response_model=BaseResponse, summary="批量上传文件")
-@Log(title="批量上传文件", operation_type=OperationType.INSERT)
+@authFileAPI.post("/upload/batch", response_class=JSONResponse, response_model=BaseResponse, summary="")
+@Log(title="", operation_type=OperationType.INSERT)
 @Auth(permission_list=["file:btn:upload", "POST:/file/upload/batch"])
 async def upload_files(
     request: Request,
-    files: List[UploadFile] = File(..., description="上传的文件列表"),
-    folder: str = Query(default="", description="文件夹路径"),
+    files: List[UploadFile] = File(..., description="Files"),
+    folder: str = Query(default="", description="Folder"),
     current_user: dict = Depends(AuthController.get_current_user)
 ):
-    """批量上传文件"""
+    """Batch upload files"""
     dynamic_config = request.app.state.dynamic_config
     storage = await StorageFactory.create(dynamic_config)
     storage_type = await dynamic_config.get("upload_storage_type", "local")
@@ -179,24 +179,24 @@ async def upload_files(
     
     for file in files:
         try:
-            # 检查文件大小
+            #  # (description)
             content = await file.read()
             await file.seek(0)
             
             if len(content) > max_size * 1024 * 1024:
-                errors.append({"name": file.filename, "error": f"文件大小超过限制（最大{max_size}MB）"})
+                errors.append({"name": file.filename, "error": f"File size exceeds {max_size}MB"})
                 continue
             
-            # 检查扩展名
+            #  # (description)
             ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else ""
             if allowed_extensions and ext not in allowed_extensions:
-                errors.append({"name": file.filename, "error": f"不支持的文件类型: {ext}"})
+                errors.append({"name": file.filename, "error": f": {ext}"})
                 continue
             
-            # 上传
+            #  # (description)
             result = await storage.upload(file, folder)
             
-            # 保存记录
+            #  # (description)
             file_record = await SystemFile.create(
                 name=file.filename,
                 key=result["key"],
@@ -221,45 +221,45 @@ async def upload_files(
         except Exception as e:
             errors.append({"name": file.filename, "error": str(e)})
     
-    return ResponseUtil.success(msg=f"上传完成，成功{len(results)}个，失败{len(errors)}个", data={
+    return ResponseUtil.success(msg=f"Upload complete: {len(results)} success, {len(errors)} errors", data={
         "success": results,
         "errors": errors
     })
 
 
-@authFileAPI.delete("/delete/{id}", response_class=JSONResponse, response_model=BaseResponse, summary="删除文件")
-@authFileAPI.post("/delete/{id}", response_class=JSONResponse, response_model=BaseResponse, summary="删除文件")
-@Log(title="删除文件", operation_type=OperationType.DELETE)
+@authFileAPI.delete("/delete/{id}", response_class=JSONResponse, response_model=BaseResponse, summary="")
+@authFileAPI.post("/delete/{id}", response_class=JSONResponse, response_model=BaseResponse, summary="")
+@Log(title="", operation_type=OperationType.DELETE)
 @Auth(permission_list=["file:btn:delete", "DELETE,POST:/file/delete/*"])
-async def delete_file(request: Request, id: str = PathParam(description="文件ID")):
-    """删除文件"""
+async def delete_file(request: Request, id: str = PathParam(description="ID")):
+    """Delete file"""
     file_record = await SystemFile.get_or_none(id=id, is_del=False)
     if not file_record:
-        return ResponseUtil.error(msg="文件不存在")
+        return ResponseUtil.error(msg="File not found")
     
     try:
         dynamic_config = request.app.state.dynamic_config
         storage = await StorageFactory.create(dynamic_config)
         
-        # 删除存储中的文件
+        #  # (description)
         await storage.delete(file_record.key)
         
-        # 软删除记录
+        #  # (description)
         file_record.is_del = True
         await file_record.save()
         
-        return ResponseUtil.success(msg="删除成功")
+        return ResponseUtil.success(msg="")
     except Exception as e:
-        logger.error(f"删除文件失败: {e}")
-        return ResponseUtil.error(msg=f"删除失败: {str(e)}")
+        logger.error(f": {e}")
+        return ResponseUtil.error(msg=f": {str(e)}")
 
 
-@authFileAPI.delete("/deleteList", response_class=JSONResponse, response_model=BaseResponse, summary="批量删除文件")
-@authFileAPI.post("/deleteList", response_class=JSONResponse, response_model=BaseResponse, summary="批量删除文件")
-@Log(title="批量删除文件", operation_type=OperationType.DELETE)
+@authFileAPI.delete("/deleteList", response_class=JSONResponse, response_model=BaseResponse, summary="")
+@authFileAPI.post("/deleteList", response_class=JSONResponse, response_model=BaseResponse, summary="")
+@Log(title="", operation_type=OperationType.DELETE)
 @Auth(permission_list=["file:btn:delete", "DELETE,POST:/file/deleteList"])
 async def delete_file_list(request: Request, params: DeleteListParams):
-    """批量删除文件"""
+    """Batch delete files"""
     dynamic_config = request.app.state.dynamic_config
     storage = await StorageFactory.create(dynamic_config)
     
@@ -269,21 +269,21 @@ async def delete_file_list(request: Request, params: DeleteListParams):
         try:
             await storage.delete(file_record.key)
         except Exception as e:
-            logger.warning(f"删除存储文件失败: {e}")
+            logger.warning(f": {e}")
     
     await SystemFile.filter(id__in=list(set(params.ids)), is_del=False).update(is_del=True)
     
-    return ResponseUtil.success(msg="删除成功")
+    return ResponseUtil.success(msg="")
 
 
-@authFileAPI.get("/info/{id}", response_class=JSONResponse, response_model=BaseResponse, summary="获取文件信息")
-@Log(title="获取文件信息", operation_type=OperationType.SELECT)
+@authFileAPI.get("/info/{id}", response_class=JSONResponse, response_model=BaseResponse, summary="")
+@Log(title="", operation_type=OperationType.SELECT)
 @Auth(permission_list=["file:btn:info", "GET:/file/info/*"])
-async def get_file_info(request: Request, id: str = PathParam(description="文件ID")):
-    """获取文件详情"""
+async def get_file_info(request: Request, id: str = PathParam(description="ID")):
+    """Get file details"""
     file_record = await SystemFile.get_or_none(id=id, is_del=False)
     if not file_record:
-        return ResponseUtil.error(msg="文件不存在")
+        return ResponseUtil.error(msg="File not found")
     
     return ResponseUtil.success(data={
         "id": file_record.id,
@@ -305,26 +305,26 @@ async def get_file_info(request: Request, id: str = PathParam(description="文�
     })
 
 
-@authFileAPI.get("/statistics", response_class=JSONResponse, response_model=BaseResponse, summary="获取文件统计")
-@Log(title="获取文件统计", operation_type=OperationType.SELECT)
+@authFileAPI.get("/statistics", response_class=JSONResponse, response_model=BaseResponse, summary="")
+@Log(title="", operation_type=OperationType.SELECT)
 @Auth(permission_list=["file:btn:list", "GET:/file/statistics"])
 async def get_file_statistics(request: Request):
-    """获取文件统计信息"""
-    from tortoise.functions import Count, Sum
+    """Get file statistics"""
+    from models.sa_orm import Count, Sum
     
-    # 总文件数和总大小
+    #  # (description)
     total_count = await SystemFile.filter(is_del=False).count()
     total_size_result = await SystemFile.filter(is_del=False).annotate(
         total=Sum("size")
     ).values("total")
     total_size = total_size_result[0]["total"] or 0 if total_size_result else 0
     
-    # 按类型统计
+    #  # (description)
     type_stats = await SystemFile.filter(is_del=False).annotate(
         count=Count("id")
     ).group_by("file_type").values("file_type", "count")
     
-    # 按存储类型统计
+    #  # (description)
     storage_stats = await SystemFile.filter(is_del=False).annotate(
         count=Count("id")
     ).group_by("storage_type").values("storage_type", "count")
@@ -337,11 +337,11 @@ async def get_file_statistics(request: Request):
     })
 
 
-@authFileAPI.get("/storage-config", response_class=JSONResponse, response_model=BaseResponse, summary="获取存储配置")
-@Log(title="获取存储配置", operation_type=OperationType.SELECT)
+@authFileAPI.get("/storage-config", response_class=JSONResponse, response_model=BaseResponse, summary="Get storage configuration")
+@Log(title="Get storage configuration", operation_type=OperationType.SELECT)
 @Auth(permission_list=["file:btn:list", "GET:/file/storage-config"])
 async def get_storage_config(request: Request):
-    """获取当前存储配置"""
+    """Get current storage configuration"""
     dynamic_config = request.app.state.dynamic_config
     
     storage_type = await dynamic_config.get("upload_storage_type", "local")

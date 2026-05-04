@@ -104,19 +104,19 @@ async def add_dictionary(
         # 检查编码是否已存在
         existing = await SystemDictionary.get_or_none(dict_code=params.dict_code, is_del=False)
         if existing:
-            return ResponseUtil.error(msg="添加失败，字典编码已存在！")
+            return ResponseUtil.error(msg="添加失败,字典编码已存在!")
         
         # 创建记录
         result = await SystemDictionary.create(**params.dict(exclude_unset=True))
         if result:
             # 清除列表缓存
             await clear_dictionary_list_cache(request.app.state.redis)
-            return ResponseUtil.success(msg="添加成功！")
+            return ResponseUtil.success(msg="添加成功!")
         else:
-            return ResponseUtil.error(msg="添加失败！")
+            return ResponseUtil.error(msg="添加失败!")
     except Exception as e:
         logger.error(f"新增数据字典失败: {str(e)}")
-        return ResponseUtil.error(msg=f"添加失败：{str(e)}")
+        return ResponseUtil.error(msg=f"添加失败:{str(e)}")
 
 
 @dictionaryAPI.delete("/delete/{id}", response_class=JSONResponse, response_model=BaseResponse, summary="删除数据字典")
@@ -128,11 +128,11 @@ async def delete_dictionary(
         id: str = Path(..., description="数据字典ID"),
         current_user: dict = Depends(AuthController.get_current_user)
 ):
-    """删除数据字典（级联删除字典项）"""
+    """删除数据字典(级联删除字典项)"""
     try:
         record = await SystemDictionary.get_or_none(id=id, is_del=False)
         if not record:
-            return ResponseUtil.error(msg="删除失败，数据字典不存在！")
+            return ResponseUtil.error(msg="删除失败,数据字典不存在!")
         
         # 软删除字典
         record.is_del = True
@@ -146,10 +146,10 @@ async def delete_dictionary(
         await clear_dictionary_items_cache(request.app.state.redis, id)
         await clear_dictionary_list_cache(request.app.state.redis)
         
-        return ResponseUtil.success(msg="删除成功！")
+        return ResponseUtil.success(msg="删除成功!")
     except Exception as e:
         logger.error(f"删除数据字典失败: {str(e)}")
-        return ResponseUtil.error(msg=f"删除失败：{str(e)}")
+        return ResponseUtil.error(msg=f"删除失败:{str(e)}")
 
 
 @dictionaryAPI.delete("/deleteList", response_class=JSONResponse, response_model=BaseResponse, summary="批量删除数据字典")
@@ -179,10 +179,10 @@ async def delete_dictionary_list(
         # 清除列表缓存
         await clear_dictionary_list_cache(request.app.state.redis)
         
-        return ResponseUtil.success(msg=f"删除成功，共删除 {deleted_count} 个数据字典！")
+        return ResponseUtil.success(msg=f"删除成功,共删除 {deleted_count} 个数据字典!")
     except Exception as e:
         logger.error(f"批量删除数据字典失败: {str(e)}")
-        return ResponseUtil.error(msg=f"批量删除失败：{str(e)}")
+        return ResponseUtil.error(msg=f"批量删除失败:{str(e)}")
 
 
 @dictionaryAPI.put("/update/{id}", response_class=JSONResponse, response_model=BaseResponse, summary="更新数据字典")
@@ -199,7 +199,7 @@ async def update_dictionary(
     try:
         record = await SystemDictionary.get_or_none(id=id, is_del=False)
         if not record:
-            return ResponseUtil.error(msg="更新失败，数据字典不存在！")
+            return ResponseUtil.error(msg="更新失败,数据字典不存在!")
         
         # 更新字段
         update_data = params.dict(exclude_unset=True, exclude_none=True)
@@ -212,10 +212,10 @@ async def update_dictionary(
         await delete_dictionary_cache(request.app.state.redis, id)
         await clear_dictionary_list_cache(request.app.state.redis)
         
-        return ResponseUtil.success(msg="更新成功！")
+        return ResponseUtil.success(msg="更新成功!")
     except Exception as e:
         logger.error(f"更新数据字典失败: {str(e)}")
-        return ResponseUtil.error(msg=f"更新失败：{str(e)}")
+        return ResponseUtil.error(msg=f"更新失败:{str(e)}")
 
 
 @dictionaryAPI.get("/info/{id}", response_class=JSONResponse, response_model=GetDictionaryInfoResponse, summary="获取数据字典信息")
@@ -226,7 +226,7 @@ async def get_dictionary_info(
         id: str = Path(..., description="数据字典ID"),
         current_user: dict = Depends(AuthController.get_current_user)
 ):
-    """获取数据字典信息（带缓存）"""
+    """获取数据字典信息(带缓存)"""
     try:
         # 尝试从缓存获取
         cached_data = await get_dictionary_from_cache(request.app.state.redis, id)
@@ -251,10 +251,10 @@ async def get_dictionary_info(
             await set_dictionary_to_cache(request.app.state.redis, id, data)
             return ResponseUtil.success(data=data)
         else:
-            return ResponseUtil.error(msg="数据字典不存在！")
+            return ResponseUtil.error(msg="数据字典不存在!")
     except Exception as e:
         logger.error(f"获取数据字典信息失败: {str(e)}")
-        return ResponseUtil.error(msg=f"获取数据字典信息失败：{str(e)}")
+        return ResponseUtil.error(msg=f"获取数据字典信息失败:{str(e)}")
 
 
 @dictionaryAPI.get("/list", response_class=JSONResponse, response_model=GetDictionaryListResponse, summary="获取数据字典列表")
@@ -270,7 +270,7 @@ async def get_dictionary_list(
         remark: Optional[str] = Query(default=None, description="备注"),
         current_user: dict = Depends(AuthController.get_current_user)
 ):
-    """获取数据字典列表（带缓存）"""
+    """获取数据字典列表(带缓存)"""
     try:
         # 构建缓存键
         cache_params = f"{page}:{pageSize}:{dict_name or ''}:{dict_code or ''}:{dict_type or ''}:{remark or ''}"
@@ -329,7 +329,7 @@ async def get_dictionary_list(
         return ResponseUtil.success(data=response_data)
     except Exception as e:
         logger.error(f"获取数据字典列表失败: {str(e)}")
-        return ResponseUtil.error(msg=f"获取数据字典列表失败：{str(e)}")
+        return ResponseUtil.error(msg=f"获取数据字典列表失败:{str(e)}")
 
 
 @dictionaryAPI.get("/code/{code}", response_class=JSONResponse, summary="根据编码获取字典项列表")
@@ -339,12 +339,12 @@ async def get_dictionary_by_code(
         code: str = Path(..., description="字典编码"),
         current_user: dict = Depends(AuthController.get_current_user)
 ):
-    """根据字典编码获取字典项列表（带缓存，常用接口）"""
+    """根据字典编码获取字典项列表(带缓存,常用接口)"""
     try:
         # 先查询字典
         dictionary = await SystemDictionary.get_or_none(dict_code=code, is_del=False)
         if not dictionary:
-            return ResponseUtil.error(msg="字典不存在！")
+            return ResponseUtil.error(msg="字典不存在!")
         
         # 尝试从缓存获取字典项
         cached_items = await get_dictionary_items_from_cache(request.app.state.redis, str(dictionary.id))
@@ -378,7 +378,7 @@ async def get_dictionary_by_code(
         return ResponseUtil.success(data=result)
     except Exception as e:
         logger.error(f"根据编码获取字典项失败: {str(e)}")
-        return ResponseUtil.error(msg=f"获取字典项失败：{str(e)}")
+        return ResponseUtil.error(msg=f"获取字典项失败:{str(e)}")
 
 
 # ==================== 数据字典项 API ====================
@@ -396,21 +396,21 @@ async def add_dictionary_item(
         # 检查字典是否存在
         dictionary = await SystemDictionary.get_or_none(id=params.dictionary_id, is_del=False)
         if not dictionary:
-            return ResponseUtil.error(msg="添加失败，所属字典不存在！")
+            return ResponseUtil.error(msg="添加失败,所属字典不存在!")
         
-        # 创建记录（将 dictionary_id 替换为 dictionary 对象）
+        # 创建记录(将 dictionary_id 替换为 dictionary 对象)
         data = params.dict(exclude_unset=True)
         data['dictionary_id'] = dictionary
         result = await SystemDictionaryItem.create(**data)
         if result:
             # 清除字典项缓存
             await clear_dictionary_items_cache(request.app.state.redis, params.dictionary_id)
-            return ResponseUtil.success(msg="添加成功！")
+            return ResponseUtil.success(msg="添加成功!")
         else:
-            return ResponseUtil.error(msg="添加失败！")
+            return ResponseUtil.error(msg="添加失败!")
     except Exception as e:
         logger.error(f"新增数据字典项失败: {str(e)}")
-        return ResponseUtil.error(msg=f"添加失败：{str(e)}")
+        return ResponseUtil.error(msg=f"添加失败:{str(e)}")
 
 
 @dictionaryAPI.delete("/item/delete/{id}", response_class=JSONResponse, response_model=BaseResponse, summary="删除数据字典项")
@@ -426,7 +426,7 @@ async def delete_dictionary_item(
     try:
         record = await SystemDictionaryItem.get_or_none(id=id, is_del=False)
         if not record:
-            return ResponseUtil.error(msg="删除失败，数据字典项不存在！")
+            return ResponseUtil.error(msg="删除失败,数据字典项不存在!")
         
         dict_id = str(record.dictionary_id_id)
         
@@ -437,10 +437,10 @@ async def delete_dictionary_item(
         # 清除缓存
         await clear_dictionary_items_cache(request.app.state.redis, dict_id)
         
-        return ResponseUtil.success(msg="删除成功！")
+        return ResponseUtil.success(msg="删除成功!")
     except Exception as e:
         logger.error(f"删除数据字典项失败: {str(e)}")
-        return ResponseUtil.error(msg=f"删除失败：{str(e)}")
+        return ResponseUtil.error(msg=f"删除失败:{str(e)}")
 
 
 @dictionaryAPI.delete("/item/deleteList", response_class=JSONResponse, response_model=BaseResponse, summary="批量删除数据字典项")
@@ -468,10 +468,10 @@ async def delete_dictionary_item_list(
         for dict_id in dict_ids:
             await clear_dictionary_items_cache(request.app.state.redis, dict_id)
         
-        return ResponseUtil.success(msg=f"删除成功，共删除 {deleted_count} 个数据字典项！")
+        return ResponseUtil.success(msg=f"删除成功,共删除 {deleted_count} 个数据字典项!")
     except Exception as e:
         logger.error(f"批量删除数据字典项失败: {str(e)}")
-        return ResponseUtil.error(msg=f"批量删除失败：{str(e)}")
+        return ResponseUtil.error(msg=f"批量删除失败:{str(e)}")
 
 
 @dictionaryAPI.put("/item/update/{id}", response_class=JSONResponse, response_model=BaseResponse, summary="更新数据字典项")
@@ -488,18 +488,18 @@ async def update_dictionary_item(
     try:
         record = await SystemDictionaryItem.get_or_none(id=id, is_del=False)
         if not record:
-            return ResponseUtil.error(msg="更新失败，数据字典项不存在！")
+            return ResponseUtil.error(msg="更新失败,数据字典项不存在!")
         
         dict_id = str(record.dictionary_id_id)
         
         # 更新字段
         update_data = params.dict(exclude_unset=True, exclude_none=True)
         
-        # 如果更新了 dictionary_id，需要转换为对象
+        # 如果更新了 dictionary_id,需要转换为对象
         if 'dictionary_id' in update_data and update_data['dictionary_id']:
             dictionary = await SystemDictionary.get_or_none(id=update_data['dictionary_id'], is_del=False)
             if not dictionary:
-                return ResponseUtil.error(msg="更新失败，所属字典不存在！")
+                return ResponseUtil.error(msg="更新失败,所属字典不存在!")
             update_data['dictionary_id'] = dictionary
             dict_id = str(dictionary.id)  # 更新缓存清除的字典ID
         
@@ -511,10 +511,10 @@ async def update_dictionary_item(
         # 清除缓存
         await clear_dictionary_items_cache(request.app.state.redis, dict_id)
         
-        return ResponseUtil.success(msg="更新成功！")
+        return ResponseUtil.success(msg="更新成功!")
     except Exception as e:
         logger.error(f"更新数据字典项失败: {str(e)}")
-        return ResponseUtil.error(msg=f"更新失败：{str(e)}")
+        return ResponseUtil.error(msg=f"更新失败:{str(e)}")
 
 
 @dictionaryAPI.get("/item/info/{id}", response_class=JSONResponse, response_model=GetDictionaryItemInfoResponse, summary="获取数据字典项信息")
@@ -543,10 +543,10 @@ async def get_dictionary_item_info(
             }
             return ResponseUtil.success(data=data)
         else:
-            return ResponseUtil.error(msg="数据字典项不存在！")
+            return ResponseUtil.error(msg="数据字典项不存在!")
     except Exception as e:
         logger.error(f"获取数据字典项信息失败: {str(e)}")
-        return ResponseUtil.error(msg=f"获取数据字典项信息失败：{str(e)}")
+        return ResponseUtil.error(msg=f"获取数据字典项信息失败:{str(e)}")
 
 
 @dictionaryAPI.get("/item/list", response_class=JSONResponse, response_model=GetDictionaryItemListResponse, summary="获取数据字典项列表")
@@ -583,7 +583,7 @@ async def get_dictionary_item_list(
         # 查询总数
         total = await SystemDictionaryItem.filter(**filter_args).count()
         
-        # 分页查询（预加载外键关系）
+        # 分页查询(预加载外键关系)
         records = await SystemDictionaryItem.filter(**filter_args).prefetch_related('dictionary_id').offset((page - 1) * pageSize).limit(pageSize).all()
         
         # 转换数据格式
@@ -611,4 +611,4 @@ async def get_dictionary_item_list(
         })
     except Exception as e:
         logger.error(f"获取数据字典项列表失败: {str(e)}")
-        return ResponseUtil.error(msg=f"获取数据字典项列表失败：{str(e)}")
+        return ResponseUtil.error(msg=f"获取数据字典项列表失败:{str(e)}")

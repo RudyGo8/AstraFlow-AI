@@ -1,17 +1,15 @@
 
-
-# 导出系统模型
-from models.config import SystemConfig
-from models.department import SystemDepartment
-from models.dictionary import SystemDictionary
-from models.dictionary_item import SystemDictionaryItem
-from models.file import SystemFile
-from models.log import SystemLoginLog, SystemOperationLog
-from models.permission import SystemPermission
-from models.role import SystemRole
-from models.user import SystemUser, SystemUserRole
-from models.casbin import CasbinRule
-from models.notification import SystemNotification, UserNotification
+from .config import SystemConfig
+from .department import SystemDepartment
+from .dictionary import SystemDictionary
+from .dictionary_item import SystemDictionaryItem
+from .file import SystemFile
+from .log import SystemLoginLog, SystemOperationLog
+from .permission import SystemPermission
+from .role import SystemRole
+from .user import SystemUser, SystemUserRole
+from .casbin import CasbinRule
+from .notification import SystemNotification, UserNotification
 
 __all__ = [
     'SystemConfig',

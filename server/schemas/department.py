@@ -12,11 +12,11 @@ class DepartmentInfo(DataBaseModel):
     model_config = ConfigDict()
     name: str = Field(..., max_length=50, description="部门名称")
     parent_id: Optional[str] = Field(default=None, max_length=50, description="上级部门ID")
-    sort: int = Field(default=0, description="排序权重（0最高）")
+    sort: int = Field(default=0, description="排序权重(0最高)")
     phone: Optional[str] = Field(default=None, max_length=30, description="部门电话")
     principal: str = Field(..., max_length=64, description="部门负责人")
     email: Optional[str] = Field(default=None, max_length=128, description="部门邮箱")
-    status: int = Field(default=1, description="状态（0正常 1停用）")
+    status: int = Field(default=1, description="状态(0正常 1停用)")
     remark: Optional[str] = Field(default=None, max_length=255, description="备注信息")
 
 
@@ -27,11 +27,11 @@ class AddDepartmentParams(BaseModel):
     model_config = ConfigDict()
     name: str = Field(..., max_length=50, description="部门名称")
     parent_id: Optional[str] = Field(default=None, max_length=50, description="上级部门ID")
-    sort: int = Field(default=0, description="排序权重（0最高）")
+    sort: int = Field(default=0, description="排序权重(0最高)")
     phone: Optional[str] = Field(default=None, max_length=30, description="部门电话")
     principal: str = Field(..., max_length=64, description="部门负责人")
     email: Optional[str] = Field(default=None, max_length=128, description="部门邮箱")
-    status: int = Field(default=1, description="状态（0正常 1停用）")
+    status: int = Field(default=1, description="状态(0正常 1停用)")
     remark: Optional[str] = Field(default=None, max_length=255, description="备注信息")
 
 
@@ -42,11 +42,11 @@ class UpdateDepartmentParams(BaseModel):
     model_config = ConfigDict()
     name: Optional[str] = Field(default=None, max_length=50, description="部门名称")
     parent_id: Optional[str] = Field(default=None, max_length=50, description="上级部门ID")
-    sort: Optional[int] = Field(default=None, description="排序权重（0最高）")
+    sort: Optional[int] = Field(default=None, description="排序权重(0最高)")
     phone: Optional[str] = Field(default=None, max_length=30, description="部门电话")
     principal: Optional[str] = Field(default=None, max_length=64, description="部门负责人")
     email: Optional[str] = Field(default=None, max_length=128, description="部门邮箱")
-    status: Optional[int] = Field(default=None, description="状态（0正常 1停用）")
+    status: Optional[int] = Field(default=None, description="状态(0正常 1停用)")
     remark: Optional[str] = Field(default=None, max_length=255, description="备注信息")
 
 

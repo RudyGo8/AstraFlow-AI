@@ -1,69 +1,69 @@
 
-from tortoise import fields
-from models.common import BaseModel
+from .sa_orm import fields
+from .common import BaseModel
 
 
 class SystemDictionary(BaseModel):
     """
-    数据字典表
+    ?
     """
 
     dict_name = fields.CharField(
         max_length=100,
         null=False,
-        description="字典名称",
+        description="  ",
         source_field="dict_name"
     )
     """
-    字典名称
+      
     """
     dict_code = fields.CharField(
         max_length=100,
         null=False,
         unique=True,
-        description="字典编码",
+        description="",
         source_field="dict_code"
     )
     """
-    字典编码
+    
     """
     dict_type = fields.CharField(
         max_length=50,
         null=False,
-        description="字典类型",
+        description="",
         source_field="dict_type"
     )
     """
-    字典类型
+    
     """
     status = fields.IntField(
         null=False,
         default=1,
-        description="状态（1启用，0禁用）",
+        description="Status (1 enabled, 0 disabled)",
         source_field="status"
     )
     """
-    状态（1启用，0禁用）
+    1??
     """
     sort = fields.IntField(
         null=False,
         default=0,
-        description="排序（数字越小越靠前）",
+        description="Sort order (smaller number = higher priority)",
         source_field="sort"
     )
     """
-    排序（数字越小越靠前）
+    ?
     """
     remark = fields.TextField(
         null=True,
-        description="备注",
+        description="",
         source_field="remark"
     )
     """
-    备注
+    
     """
 
     class Meta:
         table = "system_dictionary"
-        table_description = "数据字典表"
+        table_description = "System Dictionary Table"
         ordering = ["sort", "-created_at"]

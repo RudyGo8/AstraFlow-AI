@@ -13,8 +13,8 @@ class DictionaryInfo(DataBaseModel):
     dict_name: str = Field(..., max_length=100, description="字典名称")
     dict_code: str = Field(..., max_length=100, description="字典编码")
     dict_type: str = Field(..., max_length=50, description="字典类型")
-    status: int = Field(default=1, description="状态（1启用，0禁用）")
-    sort: int = Field(default=0, description="排序（数字越小越靠前）")
+    status: int = Field(default=1, description="状态(1启用,0禁用)")
+    sort: int = Field(default=0, description="排序(数字越小越靠前)")
     remark: Optional[str] = Field(default=None, description="备注")
 
 
@@ -24,8 +24,8 @@ class AddDictionaryParams(BaseModel):
     dict_name: str = Field(..., max_length=100, description="字典名称")
     dict_code: str = Field(..., max_length=100, description="字典编码")
     dict_type: str = Field(..., max_length=50, description="字典类型")
-    status: int = Field(default=1, description="状态（1启用，0禁用）")
-    sort: int = Field(default=0, description="排序（数字越小越靠前）")
+    status: int = Field(default=1, description="状态(1启用,0禁用)")
+    sort: int = Field(default=0, description="排序(数字越小越靠前)")
     remark: Optional[str] = Field(default=None, description="备注")
 
 
@@ -35,8 +35,8 @@ class UpdateDictionaryParams(BaseModel):
     dict_name: Optional[str] = Field(default=None, max_length=100, description="字典名称")
     dict_code: Optional[str] = Field(default=None, max_length=100, description="字典编码")
     dict_type: Optional[str] = Field(default=None, max_length=50, description="字典类型")
-    status: Optional[int] = Field(default=None, description="状态（1启用，0禁用）")
-    sort: Optional[int] = Field(default=None, description="排序（数字越小越靠前）")
+    status: Optional[int] = Field(default=None, description="状态(1启用,0禁用)")
+    sort: Optional[int] = Field(default=None, description="排序(数字越小越靠前)")
     remark: Optional[str] = Field(default=None, description="备注")
 
 
@@ -63,8 +63,8 @@ class DictionaryItemInfo(DataBaseModel):
     dictionary_id: Optional[str] = Field(default=None, description="所属字典ID")
     label: str = Field(..., max_length=100, description="字典项标签")
     value: str = Field(..., max_length=100, description="字典项值")
-    status: int = Field(default=1, description="状态（1启用，0禁用）")
-    sort: int = Field(default=0, description="排序（数字越小越靠前）")
+    status: int = Field(default=1, description="状态(1启用,0禁用)")
+    sort: int = Field(default=0, description="排序(数字越小越靠前)")
     tag_color: Optional[str] = Field(default=None, max_length=50, description="标签颜色")
     remark: Optional[str] = Field(default=None, description="备注")
 
@@ -75,8 +75,8 @@ class AddDictionaryItemParams(BaseModel):
     dictionary_id: str = Field(..., description="所属字典ID")
     label: str = Field(..., max_length=100, description="字典项标签")
     value: str = Field(..., max_length=100, description="字典项值")
-    status: int = Field(default=1, description="状态（1启用，0禁用）")
-    sort: int = Field(default=0, description="排序（数字越小越靠前）")
+    status: int = Field(default=1, description="状态(1启用,0禁用)")
+    sort: int = Field(default=0, description="排序(数字越小越靠前)")
     tag_color: Optional[str] = Field(default=None, max_length=50, description="标签颜色")
     remark: Optional[str] = Field(default=None, description="备注")
 
@@ -87,8 +87,8 @@ class UpdateDictionaryItemParams(BaseModel):
     dictionary_id: Optional[str] = Field(default=None, description="所属字典ID")
     label: Optional[str] = Field(default=None, max_length=100, description="字典项标签")
     value: Optional[str] = Field(default=None, max_length=100, description="字典项值")
-    status: Optional[int] = Field(default=None, description="状态（1启用，0禁用）")
-    sort: Optional[int] = Field(default=None, description="排序（数字越小越靠前）")
+    status: Optional[int] = Field(default=None, description="状态(1启用,0禁用)")
+    sort: Optional[int] = Field(default=None, description="排序(数字越小越靠前)")
     tag_color: Optional[str] = Field(default=None, max_length=50, description="标签颜色")
     remark: Optional[str] = Field(default=None, description="备注")
 

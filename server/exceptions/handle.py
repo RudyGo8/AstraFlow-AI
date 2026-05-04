@@ -19,13 +19,13 @@ from utils.response import ResponseUtil
 def handle_exception(app: FastAPI):
     """
     全局异常处理拦截器。
-    - 捕获并处理所有异常，返回统一的接口响应格式。
+    - 捕获并处理所有异常,返回统一的接口响应格式。
     """
 
     @app.exception_handler(AuthException)
     async def auth_exception_handler(request: Request, exc: AuthException):
         """
-        处理自定义身份验证异常（AuthException）。
+        处理自定义身份验证异常(AuthException)。
         - 返回 401 未授权响应。
         """
         logger.warning(f"身份验证异常: {exc.message}")
@@ -34,7 +34,7 @@ def handle_exception(app: FastAPI):
     @app.exception_handler(LoginException)
     async def login_exception_handler(request: Request, exc: LoginException):
         """
-        处理自定义登录异常（LoginException）。
+        处理自定义登录异常(LoginException)。
         - 返回 400 失败响应。
         """
         logger.warning(f"登录异常: {exc.message}")
@@ -43,7 +43,7 @@ def handle_exception(app: FastAPI):
     @app.exception_handler(ModelValidatorException)
     async def model_validator_exception_handler(request: Request, exc: ModelValidatorException):
         """
-        处理自定义模型校验异常（ModelValidatorException）。
+        处理自定义模型校验异常(ModelValidatorException)。
         - 返回 400 失败响应。
         """
         logger.warning(f"模型校验异常: {exc.message}")
@@ -52,7 +52,7 @@ def handle_exception(app: FastAPI):
     @app.exception_handler(FieldValidationError)
     async def field_validation_error_handler(request: Request, exc: FieldValidationError):
         """
-        处理字段校验异常（FieldValidationError）。
+        处理字段校验异常(FieldValidationError)。
         - 返回 400 失败响应。
         """
         logger.warning(f"字段校验异常: {exc.message}")
@@ -61,7 +61,7 @@ def handle_exception(app: FastAPI):
     @app.exception_handler(PermissionException)
     async def permission_exception_handler(request: Request, exc: PermissionException):
         """
-        处理自定义权限异常（PermissionException）。
+        处理自定义权限异常(PermissionException)。
         - 返回 403 未授权响应。
         """
         logger.warning(f"权限异常: {exc.message}")
@@ -70,7 +70,7 @@ def handle_exception(app: FastAPI):
     @app.exception_handler(ServiceException)
     async def service_exception_handler(request: Request, exc: ServiceException):
         """
-        处理自定义服务异常（ServiceException）。
+        处理自定义服务异常(ServiceException)。
         - 返回 500 错误响应。
         """
         logger.error(f"服务异常: {exc.message}")
@@ -79,7 +79,7 @@ def handle_exception(app: FastAPI):
     @app.exception_handler(ServiceWarning)
     async def service_warning_handler(request: Request, exc: ServiceWarning):
         """
-        处理自定义服务警告（ServiceWarning）。
+        处理自定义服务警告(ServiceWarning)。
         - 返回 400 失败响应。
         """
         logger.warning(f"服务警告: {exc.message}")
@@ -111,7 +111,7 @@ def handle_exception(app: FastAPI):
         """
         logger.warning(f"404 异常: {request.url} 未找到")
         return JSONResponse(
-            content={"code": 404, "msg": "无效路径！", "data": None},
+            content={"code": 404, "msg": "无效路径!", "data": None},
             status_code=404,
         )
 

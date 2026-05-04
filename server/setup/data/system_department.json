@@ -10,7 +10,7 @@
     "phone": "admin",
     "principal": "系统管理",
     "email": "admin@example.com",
-    "status": 0,
+    "status": 1,
     "remark": null
   }
 ]

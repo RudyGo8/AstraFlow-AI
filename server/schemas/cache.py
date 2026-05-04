@@ -31,7 +31,7 @@ class CacheInfo(BaseModel):
     cache_name: Optional[str] = Field(default=None, description='缓存名称')
     cache_value: Optional[Any] = Field(default=None, description='缓存内容')
     remark: Optional[str] = Field(default=None, description='备注')
-    ttl: Optional[int] = Field(default=None, description='生存时间（秒）')
+    ttl: Optional[int] = Field(default=None, description='生存时间(秒)')
     expire_time: Optional[str] = Field(default=None, description='过期时间')
 
 

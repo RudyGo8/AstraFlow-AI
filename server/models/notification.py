@@ -1,77 +1,77 @@
 
 
 from enum import IntEnum
-from tortoise import fields
-from models.common import BaseModel
+from .sa_orm import fields
+from .common import BaseModel
 
 
 class NotificationType(IntEnum):
-    """通知类型"""
-    LOGIN = 0       # 登录通知
-    ANNOUNCEMENT = 1  # 全局公告
-    MESSAGE = 2     # 系统消息
+    """"""
+    LOGIN = 0       # 
+    ANNOUNCEMENT = 1  #    
+    MESSAGE = 2     # 
 
 
 class NotificationScope(IntEnum):
-    """通知范围"""
-    ALL = 0         # 全部用户
-    DEPARTMENT = 1  # 指定部门
-    USER = 2        # 指定用户
+    """"""
+    ALL = 0         #       
+    DEPARTMENT = 1  #    
+    USER = 2        #    
 
 
 class NotificationStatus(IntEnum):
-    """通知状态"""
-    DRAFT = 0       # 草稿
-    PUBLISHED = 1   # 已发布
-    REVOKED = 2     # 已撤回
+    """Notification status"""
+    DRAFT = 0       # 
+    PUBLISHED = 1   # ?
+    REVOKED = 2     # ?
 
 
 class SystemNotification(BaseModel):
-    """系统通知表"""
+    """System Notification Table"""
     
-    title = fields.CharField(max_length=200, description="通知标题")
-    content = fields.TextField(description="通知内容")
-    type = fields.SmallIntField(default=2, description="通知类型：0登录通知 1全局公告 2系统消息")
-    scope = fields.SmallIntField(default=0, description="通知范围：0全部 1指定部门 2指定用户")
-    scope_ids = fields.JSONField(null=True, description="范围ID列表（部门ID或用户ID）")
-    status = fields.SmallIntField(default=0, description="状态：0草稿 1已发布 2已撤回")
-    priority = fields.SmallIntField(default=0, description="优先级：0普通 1重要 2紧急")
-    publish_time = fields.DatetimeField(null=True, description="发布时间")
-    expire_time = fields.DatetimeField(null=True, description="过期时间")
+    title = fields.CharField(max_length=200, description="Notification Title")
+    content = fields.TextField(description="Notification Content")
+    type = fields.SmallIntField(default=2, description="Type (0=Login, 1=Announcement, 2=System Message)")
+    scope = fields.SmallIntField(default=0, description="Scope (0=All, 1=Department, 2=User)")
+    scope_ids = fields.JSONField(null=True, description="Scope ID List (department IDs or user IDs)")
+    status = fields.SmallIntField(default=0, description="Status (0=Draft, 1=Published, 2=Revoked)")
+    priority = fields.SmallIntField(default=0, description="Priority (0=Normal, 1=Important, 2=Urgent)")
+    publish_time = fields.DatetimeField(null=True, description="Publish Time")
+    expire_time = fields.DatetimeField(null=True, description="Expire Time")
     creator = fields.ForeignKeyField(
         "system.SystemUser",
         related_name="created_notifications",
         on_delete=fields.SET_NULL,
         null=True,
-        description="创建者"
+        description="Creator"
     )
     
     class Meta:
         table = "system_notification"
-        table_description = "系统通知表"
+        table_description = "System Notification Table"
         ordering = ["-created_at"]
 
 
 class UserNotification(BaseModel):
-    """用户通知关联表（记录用户已读状态）"""
+    """User Notification Relation Table"""
     
     notification = fields.ForeignKeyField(
         "system.SystemNotification",
         related_name="user_notifications",
         on_delete=fields.CASCADE,
-        description="通知"
+        description="Notification"
     )
     user = fields.ForeignKeyField(
         "system.SystemUser",
         related_name="notifications",
         on_delete=fields.CASCADE,
-        description="用户"
+        description="User"
     )
-    is_read = fields.BooleanField(default=False, description="是否已读")
-    read_time = fields.DatetimeField(null=True, description="阅读时间")
+    is_read = fields.BooleanField(default=False, description="Is Read")
+    read_time = fields.DatetimeField(null=True, description="Read Time")
     
     class Meta:
         table = "user_notification"
-        table_description = "用户通知关联表"
+        table_description = "User Notification Table"
         unique_together = [("notification", "user")]
         ordering = ["-created_at"]

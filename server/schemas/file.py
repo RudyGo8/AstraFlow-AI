@@ -14,7 +14,7 @@ class FileInfo(DataBaseModel):
 
     model_config = ConfigDict()
     name: str = Field(..., description="文件名")
-    size: int = Field(..., description="文件大小（字节）")
+    size: int = Field(..., description="文件大小(字节)")
     file_type: str = Field(..., description="文件类型")
     absolute_path: str = Field(..., description="绝对路径")
     relative_path: str = Field(..., description="相对路径")
@@ -61,5 +61,5 @@ class UploadAvatarResponse(BaseResponse):
     上传头像响应模型
     """
 
-    data: dict = Field(default=None, description="头像信息，包含file_url等字段")
+    data: dict = Field(default=None, description="头像信息,包含file_url等字段")
 

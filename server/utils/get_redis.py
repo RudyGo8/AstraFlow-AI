@@ -16,7 +16,7 @@ from utils.log import logger
 
 class RedisKeyConfig(Enum):
     """
-    定义 Redis 键的常量，用于缓存和存储数据。
+    定义 Redis 键的常量,用于缓存和存储数据。
     """
 
     @property
@@ -41,13 +41,13 @@ class RedisKeyConfig(Enum):
 
 class RedisUtil:
     """
-    Redis工具类（支持单节点与集群模式）
+    Redis工具类(支持单节点与集群模式)
     提供连接管理、初始化配置等常用操作
     """
 
     @classmethod
     def _get_redis_config(cls):
-        """获取Redis配置（从统一配置中心）"""
+        """获取Redis配置(从统一配置中心)"""
         return config.redis()
 
     @classmethod
@@ -77,17 +77,17 @@ class RedisUtil:
                 **conn_params,
             )
             await conn.ping()
-            logger.info(f"Redis连接成功（{redis_cfg.host}:{redis_cfg.port}）")
+            logger.info(f"Redis连接成功({redis_cfg.host}:{redis_cfg.port})")
             return conn
 
         except AuthenticationError as e:
             logger.error(f"Redis认证失败: {e}")
             raise
         except asyncio.TimeoutError:
-            logger.error(f"Redis连接超时（地址: {redis_cfg.host}:{redis_cfg.port}）")
+            logger.error(f"Redis连接超时(地址: {redis_cfg.host}:{redis_cfg.port})")
             raise
         except ConnectionRefusedError:
-            logger.error(f"Redis连接被拒绝（地址: {redis_cfg.host}:{redis_cfg.port}）")
+            logger.error(f"Redis连接被拒绝(地址: {redis_cfg.host}:{redis_cfg.port})")
             raise
         except RedisError as e:
             logger.error(f"Redis连接失败: {e}")
@@ -114,13 +114,13 @@ class RedisUtil:
             # 获取所有系统配置
             configs = await SystemConfig.filter(is_del=False).values("key", "value")
             if not configs:
-                logger.warning("未查询到系统配置数据，跳过Redis初始化")
+                logger.warning("未查询到系统配置数据,跳过Redis初始化")
                 return
 
-            # 获取现有配置的所有 Redis 键名（带前缀）
+            # 获取现有配置的所有 Redis 键名(带前缀)
             existing_keys = [cls._get_config_key(item['key']) for item in configs]
             
-            # 删除现有的系统配置键（批量删除）
+            # 删除现有的系统配置键(批量删除)
             if existing_keys:
                 try:
                     await conn.delete(*existing_keys)
@@ -128,14 +128,14 @@ class RedisUtil:
                     # 忽略不存在的键
                     pass
 
-            # 重新设置所有系统配置到Redis（带前缀）
+            # 重新设置所有系统配置到Redis(带前缀)
             async with conn.pipeline() as pipe:
                 for item in configs:
                     redis_key = cls._get_config_key(item['key'])
                     await pipe.set(redis_key, item["value"])
                 await pipe.execute()
 
-            logger.info(f"系统配置已同步到Redis（共{len(configs)}条）")
+            logger.info(f"系统配置已同步到Redis(共{len(configs)}条)")
 
         except (RedisError, Exception) as e:
             logger.error(f"初始化系统配置到Redis失败: {e}")

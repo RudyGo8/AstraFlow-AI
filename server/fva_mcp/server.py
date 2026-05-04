@@ -46,12 +46,12 @@ api_tools.register(mcp)
 
 
 def run_stdio():
-    """运行 MCP 服务器（stdio 模式）"""
+    """运行 MCP 服务器(stdio 模式)"""
     mcp.run(transport="stdio")
 
 
 def run_sse(host: str = "0.0.0.0", port: int = 9091):
-    """运行 MCP 服务器（SSE 模式）"""
+    """运行 MCP 服务器(SSE 模式)"""
     # 获取所有已注册的工具
     tools = list(mcp._tool_manager._tools.keys()) if hasattr(mcp, '_tool_manager') else []
     

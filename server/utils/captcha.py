@@ -20,8 +20,8 @@ class CaptchaUtil:
     async def create_captcha(cls, captcha_type: str = "0"):
         """
         生成验证码
-        :param captcha_type: 验证码类型，0为算术题验证码，1为字母数字混合验证码
-        :return: 验证码图片和验证码答案（[base64图片字符串, 答案]）
+        :param captcha_type: 验证码类型,0为算术题验证码,1为字母数字混合验证码
+        :return: 验证码图片和验证码答案([base64图片字符串, 答案])
         """
         # 创建空白图像
         image = Image.new('RGB', (120, 40), color='#EAEAEA')
@@ -32,7 +32,7 @@ class CaptchaUtil:
         font = ImageFont.truetype(font_path, size=25)
 
         if captcha_type == '0':
-            # 算术题验证码：生成两个0-9之间的随机整数
+            # 算术题验证码:生成两个0-9之间的随机整数
             num1 = random.randint(0, 9)
             num2 = random.randint(0, 9)
             # 从运算符列表中随机选择一个
@@ -52,9 +52,9 @@ class CaptchaUtil:
             x = (120 - text_width) / 2
             draw.text((x, 5), text, fill='blue', font=font)
         else:
-            # 字母数字混合验证码：生成随机字母和数字组合（4位）
+            # 字母数字混合验证码:生成随机字母和数字组合(4位)
             result = ''.join(random.choices(string.ascii_letters + string.digits, k=4))
-            # 绘制每个字符，并添加随机旋转和倾斜
+            # 绘制每个字符,并添加随机旋转和倾斜
             x = 10
             for char in result:
                 # 创建单个字符的图像
@@ -113,7 +113,7 @@ class CaptchaUtil:
         """
         验证验证码
         :param request
-        :param code: 验证码（用户输入）
+        :param code: 验证码(用户输入)
         :param session_id: 会话ID
         """
         redis_code = await request.app.state.redis.get(f"{RedisKeyConfig.CAPTCHA_CODES.key}:{session_id}")
@@ -123,7 +123,7 @@ class CaptchaUtil:
                 "msg": "验证码已过期"
             }
         
-        # 统一转换为字符串进行比较（支持算术题和字母数字两种类型）
+        # 统一转换为字符串进行比较(支持算术题和字母数字两种类型)
         redis_code_str = str(redis_code).strip()
         code_str = str(code).strip()
         

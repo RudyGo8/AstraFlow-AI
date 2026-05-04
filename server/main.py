@@ -20,7 +20,7 @@ from fastapi.staticfiles import StaticFiles
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """应用生命周期管理 - 启动时初始化，关闭时清理"""
+    """应用生命周期管理 - 启动时初始化,关闭时清理"""
     print(f"\n[INIT] {config.app().name} 开始初始化...")
 
     # 1. 连接 Redis

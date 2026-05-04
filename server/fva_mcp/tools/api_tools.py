@@ -12,7 +12,7 @@ SCHEMAS_DIR = BASE_DIR / "schemas"
 
 
 def analyze_model_for_api(model_name: str) -> Dict[str, Any]:
-    """分析模型，提取API生成所需信息"""
+    """分析模型,提取API生成所需信息"""
     # 查找对应的模型文件
     model_file = None
     for file_path in MODELS_DIR.glob("*.py"):
@@ -126,20 +126,20 @@ async def add_{api_name}(
 ):
     \"\"\"新增{description}\"\"\"
     try:
-        # 检查是否已存在（如果有唯一字段的话）
+        # 检查是否已存在(如果有唯一字段的话)
         # existing = await {model_name}.get_or_none(name=params.name, is_del=False)
         # if existing:
-        #     return ResponseUtil.error(msg="添加失败，{description}已存在！")
+        #     return ResponseUtil.error(msg="添加失败,{description}已存在!")
         
         # 创建记录
         result = await {model_name}.create(**params.dict(exclude_unset=True))
         if result:
-            return ResponseUtil.success(msg="添加成功！")
+            return ResponseUtil.success(msg="添加成功!")
         else:
-            return ResponseUtil.error(msg="添加失败！")
+            return ResponseUtil.error(msg="添加失败!")
     except Exception as e:
         logger.error(f"新增{description}失败: {{str(e)}}")
-        return ResponseUtil.error(msg=f"添加失败：{{str(e)}}")
+        return ResponseUtil.error(msg=f"添加失败:{{str(e)}}")
 
 
 @{router_name}.delete("/delete/{{id}}", response_class=JSONResponse, response_model=BaseResponse, summary="删除{description}")
@@ -155,7 +155,7 @@ async def delete_{api_name}(
     try:
         record = await {model_name}.get_or_none(id=id, is_del=False)
         if not record:
-            return ResponseUtil.error(msg="删除失败，{description}不存在！")
+            return ResponseUtil.error(msg="删除失败,{description}不存在!")
         
         # 软删除
         record.is_del = True
@@ -166,10 +166,10 @@ async def delete_{api_name}(
         if await request.app.state.redis.get(cache_key):
             await request.app.state.redis.delete(cache_key)
         
-        return ResponseUtil.success(msg="删除成功！")
+        return ResponseUtil.success(msg="删除成功!")
     except Exception as e:
         logger.error(f"删除{description}失败: {{str(e)}}")
-        return ResponseUtil.error(msg=f"删除失败：{{str(e)}}")
+        return ResponseUtil.error(msg=f"删除失败:{{str(e)}}")
 
 
 @{router_name}.delete("/deleteList", response_class=JSONResponse, response_model=BaseResponse, summary="批量删除{description}")
@@ -191,10 +191,10 @@ async def delete_{api_name}_list(
                 await record.save()
                 deleted_count += 1
         
-        return ResponseUtil.success(msg=f"删除成功，共删除 {{deleted_count}} 个{description}！")
+        return ResponseUtil.success(msg=f"删除成功,共删除 {{deleted_count}} 个{description}!")
     except Exception as e:
         logger.error(f"批量删除{description}失败: {{str(e)}}")
-        return ResponseUtil.error(msg=f"批量删除失败：{{str(e)}}")
+        return ResponseUtil.error(msg=f"批量删除失败:{{str(e)}}")
 
 
 @{router_name}.put("/update/{{id}}", response_class=JSONResponse, response_model=BaseResponse, summary="更新{description}")
@@ -211,7 +211,7 @@ async def update_{api_name}(
     try:
         record = await {model_name}.get_or_none(id=id, is_del=False)
         if not record:
-            return ResponseUtil.error(msg="更新失败，{description}不存在！")
+            return ResponseUtil.error(msg="更新失败,{description}不存在!")
         
         # 更新字段
         update_data = params.dict(exclude_unset=True, exclude_none=True)
@@ -225,10 +225,10 @@ async def update_{api_name}(
         if await request.app.state.redis.get(cache_key):
             await request.app.state.redis.delete(cache_key)
         
-        return ResponseUtil.success(msg="更新成功！")
+        return ResponseUtil.success(msg="更新成功!")
     except Exception as e:
         logger.error(f"更新{description}失败: {{str(e)}}")
-        return ResponseUtil.error(msg=f"更新失败：{{str(e)}}")
+        return ResponseUtil.error(msg=f"更新失败:{{str(e)}}")
 
 
 @{router_name}.get("/info/{{id}}", response_class=JSONResponse, response_model=Get{base_name}InfoResponse, summary="获取{description}信息")
@@ -261,10 +261,10 @@ async def get_{api_name}_info(
     code += f"""            }}
             return ResponseUtil.success(data=data)
         else:
-            return ResponseUtil.error(msg="{description}不存在！")
+            return ResponseUtil.error(msg="{description}不存在!")
     except Exception as e:
         logger.error(f"获取{description}信息失败: {{str(e)}}")
-        return ResponseUtil.error(msg=f"获取{description}信息失败：{{str(e)}}")
+        return ResponseUtil.error(msg=f"获取{description}信息失败:{{str(e)}}")
 
 
 @{router_name}.get("/list", response_class=JSONResponse, response_model=Get{base_name}ListResponse, summary="获取{description}列表")
@@ -333,7 +333,7 @@ async def get_{api_name}_list(
         }})
     except Exception as e:
         logger.error(f"获取{description}列表失败: {{str(e)}}")
-        return ResponseUtil.error(msg=f"获取{description}列表失败：{{str(e)}}")
+        return ResponseUtil.error(msg=f"获取{description}列表失败:{{str(e)}}")
 """
     
     return code
@@ -352,7 +352,7 @@ def create_api_file(model_name: str) -> str:
         api_file = APIS_DIR / api_filename
         
         if api_file.exists():
-            return f"⚠️ API文件 {api_filename} 已存在，跳过生成以避免覆盖现有文件。如需强制覆盖，请使用 create_api_from_model_force 工具"
+            return f"⚠️ API文件 {api_filename} 已存在,跳过生成以避免覆盖现有文件。如需强制覆盖,请使用 create_api_from_model_force 工具"
         
         # 生成API代码
         api_code = generate_api_code(model_info)
@@ -370,7 +370,7 @@ def create_api_file(model_name: str) -> str:
 
 
 def create_api_file_force(model_name: str) -> str:
-    """强制创建API文件（覆盖现有文件）"""
+    """强制创建API文件(覆盖现有文件)"""
     try:
         # 分析模型
         model_info = analyze_model_for_api(model_name)
@@ -387,7 +387,7 @@ def create_api_file_force(model_name: str) -> str:
         # 确保apis目录存在
         APIS_DIR.mkdir(parents=True, exist_ok=True)
         
-        # 写入文件（强制覆盖）
+        # 写入文件(强制覆盖)
         api_file.write_text(api_code, encoding="utf-8")
         
         status = "覆盖" if api_file.exists() else "创建"
@@ -466,10 +466,10 @@ def register(mcp):
     @mcp.tool()
     def create_api_from_model(model_name: str) -> str:
         """
-        根据模型创建API文件（不覆盖现有文件）
+        根据模型创建API文件(不覆盖现有文件)
         
         Args:
-            model_name: 模型类名（如：SystemUser）
+            model_name: 模型类名(如:SystemUser)
         
         Returns:
             创建结果信息
@@ -479,10 +479,10 @@ def register(mcp):
     @mcp.tool()
     def create_api_from_model_force(model_name: str) -> str:
         """
-        根据模型强制创建API文件（覆盖现有文件）
+        根据模型强制创建API文件(覆盖现有文件)
         
         Args:
-            model_name: 模型类名（如：SystemUser）
+            model_name: 模型类名(如:SystemUser)
         
         Returns:
             创建结果信息
@@ -512,7 +512,7 @@ def register(mcp):
     @mcp.tool()
     def analyze_model_for_api_generation(model_name: str) -> str:
         """
-        分析模型结构，用于API生成
+        分析模型结构,用于API生成
         
         Args:
             model_name: 模型类名

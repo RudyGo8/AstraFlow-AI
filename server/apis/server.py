@@ -29,7 +29,7 @@ serverAPI = APIRouter(
 @Auth(permission_list=["server:btn:info", "GET:/server"])
 async def get_server_info(request: Request):
     # CPU信息
-    # 获取CPU总核心数（逻辑核心）
+    # 获取CPU总核心数(逻辑核心)
     cpu_num = psutil.cpu_count(logical=True)
     # 获取物理核心数
     physical_cpu_num = psutil.cpu_count(logical=False)
@@ -185,7 +185,7 @@ async def get_server_info(request: Request):
             disk_data = SystemFiles(
                 dir_name=i.device,
                 sys_type_name=i.fstype,
-                type_name='本地固定磁盘（' + i.mountpoint.replace('\\', '') + '）',
+                type_name='本地固定磁盘(' + i.mountpoint.replace('\\', '') + ')',
                 mount_point=i.mountpoint,
                 total=bytes2human(o.total),
                 used=bytes2human(o.used),
@@ -194,7 +194,7 @@ async def get_server_info(request: Request):
             )
             sys_files.append(disk_data)
         except Exception as e:
-            logger.error(f"获取磁盘信息失败：{e}")
+            logger.error(f"获取磁盘信息失败:{e}")
             continue
 
     # 网络信息
@@ -226,7 +226,7 @@ async def get_server_info(request: Request):
             )
             network_list.append(network_info)
     except Exception as e:
-        logger.error(f"获取网络信息失败：{e}")
+        logger.error(f"获取网络信息失败:{e}")
 
     # 磁盘IO信息
     disk_io = None
@@ -242,7 +242,7 @@ async def get_server_info(request: Request):
                 write_time=disk_io_counters.write_time
             )
     except Exception as e:
-        logger.error(f"获取磁盘IO信息失败：{e}")
+        logger.error(f"获取磁盘IO信息失败:{e}")
 
     result = GetSystemInfoResult(
         cpu=cpu,

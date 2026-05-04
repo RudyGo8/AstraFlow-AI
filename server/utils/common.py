@@ -25,11 +25,11 @@ def bytes2human(n, format_str='%(value).1f%(symbol)s'):
 async def filterKeyValues(dataList: List[dict], key: str, default: Any = None, convert_type: Optional[Type] = None) -> \
 List[Any]:
     """
-    获取列表字段数据，并可选择进行类型转换。
-    :param dataList: 数据列表（列表中的元素是字典）
+    获取列表字段数据,并可选择进行类型转换。
+    :param dataList: 数据列表(列表中的元素是字典)
     :param key: 要提取的字段
-    :param default: 如果字段不存在，返回的默认值
-    :param convert_type: 需要转换的类型（如 int、str、float 等），默认为 None 不转换
+    :param default: 如果字段不存在,返回的默认值
+    :param convert_type: 需要转换的类型(如 int、str、float 等),默认为 None 不转换
     :return: 提取并转换后的值列表
     """
     return [convert_type(item.get(key, default)) if convert_type else item.get(key, default) for item in dataList]

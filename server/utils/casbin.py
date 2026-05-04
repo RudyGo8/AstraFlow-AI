@@ -38,7 +38,7 @@ class PermissionType(IntEnum):
 
 
 # 默认 RBAC 模型配置
-# p = sub(角色), obj(权限ID或API路径), act(权限类型或HTTP方法), eft(效果，可选)
+# p = sub(角色), obj(权限ID或API路径), act(权限类型或HTTP方法), eft(效果,可选)
 DEFAULT_CASBIN_MODEL = """[request_definition]
 r = sub, obj, act
 
@@ -61,7 +61,7 @@ class DepartmentHelper:
     
     @classmethod
     async def get_child_department_ids(cls, dept_id: str, include_self: bool = True) -> Set[str]:
-        """获取部门及其所有下属部门ID（不过滤状态）"""
+        """获取部门及其所有下属部门ID(不过滤状态)"""
         result = set()
         if include_self:
             result.add(dept_id)
@@ -82,7 +82,7 @@ class DepartmentHelper:
     
     @classmethod
     async def get_all_department_ids(cls) -> Set[str]:
-        """获取所有部门ID（不过滤状态，确保能获取到所有部门）"""
+        """获取所有部门ID(不过滤状态,确保能获取到所有部门)"""
         depts = await SystemDepartment.filter(
             is_del=False
         ).values_list("id", flat=True)
@@ -93,12 +93,12 @@ class CasbinEnforcer:
     """
     Casbin 权限执行器
     
-    权限策略结构：
+    权限策略结构:
     - p, role_code, permission_id, menu|button  (菜单/按钮权限)
     - p, role_code, /api/path/*, GET|POST|...   (API权限)
     - g, user_id, role_code                      (用户-角色关联)
     
-    数据权限基于 user_type：
+    数据权限基于 user_type:
     - 超级管理员 (0): 全部数据
     - 管理员 (1): 全部数据
     - 部门管理员 (2): 本部门及下属部门
@@ -235,7 +235,7 @@ class CasbinEnforcer:
             }
         
         user_type = user.user_type
-        dept_id = str(user.department_id) if user.department_id else None
+        dept_id = str(user.department) if user.department else None
         
         if user_type in (UserType.SUPER_ADMIN, UserType.ADMIN):
             all_depts = await DepartmentHelper.get_all_department_ids()
@@ -278,8 +278,8 @@ class CasbinEnforcer:
         
         if scope["scope"] == DataScope.DEPT_AND_CHILD:
             target_user = await SystemUser.filter(id=target_user_id, is_del=False).first()
-            if target_user and target_user.department_id:
-                return str(target_user.department_id) in scope["department_ids"]
+            if target_user and target_user.department:
+                return str(target_user.department) in scope["department_ids"]
         
         return False
     
@@ -301,7 +301,7 @@ class CasbinEnforcer:
     @classmethod
     async def add_permission_for_role(cls, role_code: str, permission_id: str, perm_type: str = "menu") -> bool:
         """
-        为角色添加权限（菜单/按钮）
+        为角色添加权限(菜单/按钮)
         
         Args:
             role_code: 角色编码
@@ -346,8 +346,8 @@ class CasbinEnforcer:
         
         Args:
             role_code: 角色编码
-            api_path: API 路径（支持通配符，如 /api/user/*）
-            api_method: HTTP 方法（支持正则，如 GET|POST）
+            api_path: API 路径(支持通配符,如 /api/user/*)
+            api_method: HTTP 方法(支持正则,如 GET|POST)
         """
         enforcer = cls.get_enforcer()
         rule = [role_code, api_path, api_method]
@@ -421,7 +421,7 @@ class CasbinEnforcer:
     @classmethod
     async def set_role_permissions(cls, role_code: str, permission_ids: List[str], perm_type: str = "menu") -> dict:
         """
-        设置角色的权限（全量更新）
+        设置角色的权限(全量更新)
         
         Args:
             role_code: 角色编码
@@ -485,7 +485,7 @@ class CasbinEnforcer:
     @classmethod
     async def set_roles_for_user(cls, user_id: str, role_codes: List[str]) -> dict:
         """
-        设置用户的角色（全量更新）
+        设置用户的角色(全量更新)
         
         Returns:
             {"added": int, "removed": int}
@@ -516,7 +516,7 @@ class CasbinEnforcer:
     
     @classmethod
     async def delete_role(cls, role_code: str) -> bool:
-        """删除角色（包括所有关联）"""
+        """删除角色(包括所有关联)"""
         enforcer = cls.get_enforcer()
         result = enforcer.delete_role(role_code)
         if result:
@@ -544,7 +544,7 @@ class CasbinEnforcer:
     @classmethod
     async def get_user_permissions(cls, user_id: str) -> Dict:
         """
-        获取用户的所有权限（通过角色继承）
+        获取用户的所有权限(通过角色继承)
         
         Returns:
             {

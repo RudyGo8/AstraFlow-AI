@@ -11,7 +11,7 @@ def get_redis_config() -> dict:
     
     config_path = Path(__file__).parent.parent.parent / "config.yaml"
     if not config_path.exists():
-        raise FileNotFoundError("配置文件不存在，请先完成系统初始化")
+        raise FileNotFoundError("配置文件不存在,请先完成系统初始化")
     
     with open(config_path, "r", encoding="utf-8") as f:
         config = yaml.safe_load(f)
@@ -63,7 +63,7 @@ def register(mcp):
             key: Redis 键名
         
         Returns:
-            键值（字符串）或错误信息
+            键值(字符串)或错误信息
         """
         async with get_redis_connection() as redis:
             try:
@@ -82,7 +82,7 @@ def register(mcp):
         Args:
             key: Redis 键名
             value: 键值
-            expire_seconds: 过期时间（秒），不传则永不过期
+            expire_seconds: 过期时间(秒),不传则永不过期
         
         Returns:
             操作结果
@@ -125,7 +125,7 @@ def register(mcp):
         查找匹配的 Redis 键
         
         Args:
-            pattern: 匹配模式，支持通配符 * 和 ?
+            pattern: 匹配模式,支持通配符 * 和 ?
         
         Returns:
             匹配的键列表
@@ -167,7 +167,7 @@ def register(mcp):
             key: Redis 键名
         
         Returns:
-            剩余秒数（-1 表示永不过期，-2 表示键不存在）
+            剩余秒数(-1 表示永不过期,-2 表示键不存在)
         """
         async with get_redis_connection() as redis:
             try:
@@ -188,7 +188,7 @@ def register(mcp):
         
         Args:
             key: Redis 键名
-            seconds: 过期时间（秒）
+            seconds: 过期时间(秒)
         
         Returns:
             操作结果
@@ -299,8 +299,8 @@ def register(mcp):
         
         Args:
             key: Redis 键名
-            start: 起始索引（默认 0）
-            end: 结束索引（默认 -1 表示最后一个）
+            start: 起始索引(默认 0)
+            end: 结束索引(默认 -1 表示最后一个)
         
         Returns:
             元素列表
@@ -333,7 +333,7 @@ def register(mcp):
                 return json.dumps({
                     "success": True,
                     "length": length,
-                    "msg": f"插入成功，列表长度: {length}"
+                    "msg": f"插入成功,列表长度: {length}"
                 }, ensure_ascii=False)
             except Exception as e:
                 return json.dumps({"success": False, "error": str(e)}, ensure_ascii=False)
@@ -356,7 +356,7 @@ def register(mcp):
                 return json.dumps({
                     "success": True,
                     "length": length,
-                    "msg": f"插入成功，列表长度: {length}"
+                    "msg": f"插入成功,列表长度: {length}"
                 }, ensure_ascii=False)
             except Exception as e:
                 return json.dumps({"success": False, "error": str(e)}, ensure_ascii=False)
@@ -456,7 +456,7 @@ def register(mcp):
         获取 Redis 服务器信息
         
         Args:
-            section: 信息分类（server/clients/memory/stats/replication/cpu/keyspace），不传则返回全部
+            section: 信息分类(server/clients/memory/stats/replication/cpu/keyspace),不传则返回全部
         
         Returns:
             服务器信息

@@ -63,3 +63,13 @@ docker/redis/data/
 docker/milvus/data/
 docker/minio/data/
 docker/etcd/data/
+server/.venv-codex/
+_check_compile.py
+docker/fva_redis/
+docker/mysql/
+server/_create_test_user.py
+server/_fix_db.py
+server/_fix_db2.py
+server/_test.py
+logs/
+.idea/

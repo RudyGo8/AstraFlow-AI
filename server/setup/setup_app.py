@@ -3,11 +3,49 @@ import hashlib
 from pathlib import Path
 
 import uvicorn
+from sqlalchemy import text
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
+from models.sa_orm import _DB, init_orm, close_orm, SADeclarativeBase
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-# 获取项目根目录
+#  # (description)
+
+class _ConnWrapper:
+    async def execute_query(self, sql: str, params=None):
+        async with _DB.session_factory() as s:
+            result = await s.execute(text(sql), params or {})
+            rows = [dict(r) for r in result.mappings().all()] if result.returns_rows else []
+            await s.commit()
+            return len(rows), rows
+
+
+class ORMDriver:
+    @staticmethod
+    async def init(db_url=None, **kwargs):
+        if db_url is not None:
+            if _DB.initialized:
+                return
+            _DB.engine = create_async_engine(db_url.replace("mysql://", "mysql+aiomysql://").replace("postgres://", "postgresql+asyncpg://"), echo=False, pool_pre_ping=True)
+            _DB.session_factory = async_sessionmaker(_DB.engine, expire_on_commit=False)
+            _DB.initialized = True
+        else:
+            await init_orm()
+
+    @staticmethod
+    def get_connection(name='default'):
+        return _ConnWrapper()
+
+    @staticmethod
+    async def generate_schemas():
+        async with _DB.engine.begin() as conn:
+            await conn.run_sync(SADeclarativeBase.metadata.create_all)
+
+    @staticmethod
+    async def close_connections():
+        await close_orm()
+
 BASE_DIR = Path(__file__).parent.parent
 TEMPLATE_DIR = Path(__file__).parent / "templates"
 DATA_DIR = Path(__file__).parent / "data"
@@ -15,7 +53,7 @@ CONFIG_PATH = BASE_DIR / "config.yaml"
 
 
 class DatabaseConfig(BaseModel):
-    """数据库配置"""
+    """Database configuration"""
     engine: str = "mysql"
     host: str = "127.0.0.1"
     port: int = 3307
@@ -25,7 +63,7 @@ class DatabaseConfig(BaseModel):
 
 
 class RedisConfig(BaseModel):
-    """Redis配置"""
+    """Redis"""
     mode: str = "server"
     host: str = "127.0.0.1"
     port: int = 6379
@@ -34,14 +72,14 @@ class RedisConfig(BaseModel):
 
 
 class JwtConfig(BaseModel):
-    """JWT配置"""
+    """JWT"""
     secret_key: str = ""
     salt: str = "fastapi-vue-admin"
     expire_minutes: int = 1440
 
 
 class AppConfig(BaseModel):
-    """应用配置"""
+    """Application configuration"""
     name: str = "FastAPI-Vue-Admin"
     host: str = "0.0.0.0"
     port: int = 9090
@@ -49,15 +87,15 @@ class AppConfig(BaseModel):
 
 
 class AdminConfig(BaseModel):
-    """管理员配置"""
+    """Admin configuration"""
     username: str = "admin"
     password: str = "admin123"
-    nickname: str = "超级管理员"
+    nickname: str = "Super Admin"
     email: str = "admin@example.com"
 
 
 class SetupConfig(BaseModel):
-    """完整初始化配置"""
+    """Complete initialization configuration"""
     app: AppConfig = AppConfig()
     database: DatabaseConfig = DatabaseConfig()
     redis: RedisConfig = RedisConfig()
@@ -65,42 +103,42 @@ class SetupConfig(BaseModel):
     admin: AdminConfig = AdminConfig()
 
 
-# 创建初始化应用
+#  # (description)
 setup_app = FastAPI(
-    title="系统初始化",
-    description="系统初始化配置向导",
+    title="System initialization",
+    description="System initialization configuration wizard",
     docs_url=None,
     redoc_url=None,
 )
 
 
 def get_setup_html() -> str:
-    """获取初始化页面HTML"""
+    """Get setup page HTML"""
     html_path = TEMPLATE_DIR / "setup.html"
     if html_path.exists():
         return html_path.read_text(encoding="utf-8")
-    return "<h1>初始化页面模板不存在</h1>"
+    return "<h1>     </h1>"
 
 
 @setup_app.get("/", response_class=HTMLResponse)
 async def setup_page():
-    """初始化页面"""
+    """Setup page"""
     return get_setup_html()
 
 
 @setup_app.post("/api/setup/test-database")
 async def test_database(config: DatabaseConfig):
-    """测试数据库连接"""
+    """Test database connection"""
     try:
         if config.engine == "sqlite":
-            # SQLite 不需要测试连接，只需确保可以创建文件
+            # SQLite  # (description)
             import aiosqlite
             import os
             db_path = config.database if config.database else "fva.db"
-            # 测试是否可以创建/打开数据库文件
+            #  # (description)
             async with aiosqlite.connect(db_path) as conn:
                 await conn.execute("SELECT 1")
-            return {"success": True, "msg": "SQLite 数据库就绪"}
+            return {"success": True, "msg": "SQLite database is ready"}
         elif config.engine == "mysql":
             import aiomysql
             conn = await aiomysql.connect(
@@ -110,7 +148,7 @@ async def test_database(config: DatabaseConfig):
                 password=config.password,
                 connect_timeout=5
             )
-            # 尝试创建数据库（如果不存在）
+            #  # (description)
             async with conn.cursor() as cursor:
                 await cursor.execute(
                     f"CREATE DATABASE IF NOT EXISTS `{config.database}` "
@@ -119,7 +157,7 @@ async def test_database(config: DatabaseConfig):
             await conn.ensure_closed()
         elif config.engine == "postgresql":
             import asyncpg
-            # PostgreSQL 需要先连接默认数据库
+            # PostgreSQL  # (description)
             conn = await asyncpg.connect(
                 host=config.host,
                 port=config.port,
@@ -128,7 +166,7 @@ async def test_database(config: DatabaseConfig):
                 database="postgres",
                 timeout=10
             )
-            # 检查数据库是否存在
+            #  # (description)
             exists = await conn.fetchval(
                 "SELECT 1 FROM pg_database WHERE datname = $1",
                 config.database
@@ -136,19 +174,19 @@ async def test_database(config: DatabaseConfig):
             if not exists:
                 await conn.execute(f'CREATE DATABASE "{config.database}"')
             await conn.close()
-        return {"success": True, "msg": "数据库连接成功，数据库已就绪"}
+        return {"success": True, "msg": "   "}
     except Exception as e:
         import traceback
         error_detail = traceback.format_exc()
-        return {"success": False, "msg": f"连接失败: {type(e).__name__}: {str(e) or repr(e)}", "detail": error_detail}
+        return {"success": False, "msg": f": {type(e).__name__}: {str(e) or repr(e)}", "detail": error_detail}
 
 
 @setup_app.post("/api/setup/test-redis")
 async def test_redis(config: RedisConfig):
-    """测试Redis连接"""
+    """Redis"""
     try:
         
-        # 服务器模式测试连接
+        #  # (description)
         import redis.asyncio as aioredis
         r = aioredis.Redis(
             host=config.host,
@@ -159,27 +197,28 @@ async def test_redis(config: RedisConfig):
         )
         await r.ping()
         await r.aclose()
-        return {"success": True, "msg": "Redis连接成功"}
+        return {"success": True, "msg": "Redis"}
     except Exception as e:
-        return {"success": False, "msg": f"连接失败: {str(e)}"}
+        return {"success": False, "msg": f": {str(e)}"}
 
 
 def hash_password(password: str, salt: str) -> str:
-    """密码加密"""
+    """ """
     password_with_salt = (salt + password).encode('utf-8')
     return hashlib.sha256(password_with_salt).hexdigest()
 
 
 async def init_database_tables(db_config: DatabaseConfig):
-    """初始化数据库表结构"""
-    from tortoise import Tortoise
+    """Initialize database tables"""
+    from sqlalchemy import text
+    from models.sa_orm import _DB, init_orm, close_orm, SADeclarativeBase
     
-    # 根据数据库类型构建连接 URL
+    #  # (description)
     if db_config.engine == "sqlite":
         db_path = db_config.database if db_config.database else "fva.db"
         db_url = f"sqlite://{db_path}"
     elif db_config.engine == "mysql":
-        # 先确保数据库存在
+        #  # (description)
         import aiomysql
         conn = await aiomysql.connect(
             host=db_config.host,
@@ -189,7 +228,7 @@ async def init_database_tables(db_config: DatabaseConfig):
             connect_timeout=10
         )
         async with conn.cursor() as cursor:
-            # 检查数据库是否存在
+            #  # (description)
             await cursor.execute(
                 "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = %s",
                 (db_config.database,)
@@ -197,7 +236,7 @@ async def init_database_tables(db_config: DatabaseConfig):
             db_exists = await cursor.fetchone()
             
             if not db_exists:
-                # 数据库不存在，创建新数据库
+                #  # (description)
                 await cursor.execute(
                     f"CREATE DATABASE `{db_config.database}` "
                     f"CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
@@ -231,7 +270,7 @@ async def init_database_tables(db_config: DatabaseConfig):
             f"{db_config.host}:{db_config.port}/{db_config.database}"
         )
     
-    await Tortoise.init(
+    await ORMDriver.init(
         db_url=db_url,
         modules={"system": [
             "models.user",
@@ -248,10 +287,10 @@ async def init_database_tables(db_config: DatabaseConfig):
         timezone="Asia/Shanghai"
     )
     
-    # 获取数据库连接，删除已存在的表后重建
-    conn = Tortoise.get_connection("default")
+    #  # (description)
+    conn = ORMDriver.get_connection("default")
     
-    # 需要删除的表列表（按依赖顺序，先删除有外键依赖的表）
+    #  # (description)
     tables_to_drop = [
         "system_user_role",
         "user_notification",
@@ -267,7 +306,7 @@ async def init_database_tables(db_config: DatabaseConfig):
         "casbin_rule",
     ]
     
-    # 禁用外键检查（MySQL）
+    #  # (description)
     try:
         await conn.execute_query("SET FOREIGN_KEY_CHECKS = 0")
     except Exception:
@@ -277,29 +316,30 @@ async def init_database_tables(db_config: DatabaseConfig):
         try:
             await conn.execute_query(f"DROP TABLE IF EXISTS `{table}`")
         except Exception:
-            pass  # 表不存在则忽略
+            pass  #    ?
     
-    # 重新启用外键检查
+    #  # (description)
     try:
         await conn.execute_query("SET FOREIGN_KEY_CHECKS = 1")
     except Exception:
         pass
     
-    # 重新生成表结构
-    await Tortoise.generate_schemas()
-    await Tortoise.close_connections()
+    #  # (description)
+    await ORMDriver.generate_schemas()
+    await ORMDriver.close_connections()
 
 
 async def init_admin_and_data(db_config: DatabaseConfig, admin_config: AdminConfig, jwt_salt: str):
-    """初始化管理员账号和基础数据 - 从 JSON 文件批量导入"""
-    from tortoise import Tortoise
+    """ - ?JSON """
+    from sqlalchemy import text
+    from models.sa_orm import _DB, init_orm, close_orm, SADeclarativeBase
     from datetime import datetime
     import json
     
-    # 当前时间，用于所有导入数据
+    #  # (description)
     now = datetime.now()
     
-    # 根据数据库类型构建连接 URL
+    #  # (description)
     if db_config.engine == "sqlite":
         db_path = db_config.database if db_config.database else "fva.db"
         db_url = f"sqlite://{db_path}"
@@ -314,7 +354,7 @@ async def init_admin_and_data(db_config: DatabaseConfig, admin_config: AdminConf
             f"{db_config.host}:{db_config.port}/{db_config.database}"
         )
     
-    await Tortoise.init(
+    await ORMDriver.init(
         db_url=db_url,
         modules={"system": [
             "models.user",
@@ -335,7 +375,7 @@ async def init_admin_and_data(db_config: DatabaseConfig, admin_config: AdminConf
     from models.user import SystemUserRole
     from models.casbin import CasbinRule
     
-    # 1. 导入部门数据
+    # 1.  # (description)
     dept_file = DATA_DIR / "system_department.json"
     if dept_file.exists():
         departments = json.loads(dept_file.read_text(encoding="utf-8"))
@@ -354,7 +394,7 @@ async def init_admin_and_data(db_config: DatabaseConfig, admin_config: AdminConf
                 updated_at=now
             )
     
-    # 2. 导入角色数据
+    # 2.  # (description)
     role_file = DATA_DIR / "system_role.json"
     if role_file.exists():
         roles = json.loads(role_file.read_text(encoding="utf-8"))
@@ -370,7 +410,7 @@ async def init_admin_and_data(db_config: DatabaseConfig, admin_config: AdminConf
                 updated_at=now
             )
     
-    # 3. 导入权限数据
+    # 3.  # (description)
     perm_file = DATA_DIR / "system_permission.json"
     if perm_file.exists():
         permissions = json.loads(perm_file.read_text(encoding="utf-8"))
@@ -407,7 +447,7 @@ async def init_admin_and_data(db_config: DatabaseConfig, admin_config: AdminConf
                 updated_at=now
             )
     
-    # 4. 创建管理员账号（使用用户配置的密码重新计算）
+    # 4.  # (description)
     hashed_pwd = hash_password(admin_config.password, jwt_salt)
     dept = await SystemDepartment.get_or_none(name="系统管理", is_del=False)
     admin = await SystemUser.create(
@@ -415,14 +455,14 @@ async def init_admin_and_data(db_config: DatabaseConfig, admin_config: AdminConf
         password=hashed_pwd,
         nickname=admin_config.nickname,
         email=admin_config.email,
-        user_type=0,  # 超级管理员
+        user_type=0,  # $?
         status=1,
         department=dept,
         created_at=now,
         updated_at=now
     )
     
-    # 5. 关联管理员角色
+    # 5.  # (description)
     admin_role = await SystemRole.get_or_none(code="admin", is_del=False)
     if admin_role:
         await SystemUserRole.create(
@@ -432,7 +472,7 @@ async def init_admin_and_data(db_config: DatabaseConfig, admin_config: AdminConf
             updated_at=now
         )
     
-    # 6. 导入 Casbin 规则
+    # 6.  # (description)
     casbin_file = DATA_DIR / "casbin_rule.json"
     if casbin_file.exists():
         casbin_rules = json.loads(casbin_file.read_text(encoding="utf-8"))
@@ -450,7 +490,7 @@ async def init_admin_and_data(db_config: DatabaseConfig, admin_config: AdminConf
                 updated_at=now
             )
     
-    # 7. 添加新管理员用户到 Casbin（用户ID -> 角色代码）
+    # 7.  # (description)
     if admin_role:
         await CasbinRule.create(
             ptype="g",
@@ -460,23 +500,23 @@ async def init_admin_and_data(db_config: DatabaseConfig, admin_config: AdminConf
             updated_at=now
         )
     
-    await Tortoise.close_connections()
+    await ORMDriver.close_connections()
 
 
 @setup_app.post("/api/setup/initialize")
 async def initialize_system(config: SetupConfig):
-    """初始化系统配置"""
+    """Initialize system configuration"""
     try:
-        # 生成 JWT 密钥
+        #  # (description)
         jwt_secret = config.jwt.secret_key or secrets.token_hex(32)
         jwt_salt = config.jwt.salt or "digital-research-system"
         
-        # 1. 生成配置文件
-        config_content = f"""# 应用基础配置
-# 此文件由系统初始化向导自动生成
-# 生成时间: {__import__('datetime').datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        # 1.  # (description)
+        config_content = f"""# 
+#  # (description)
+#  # (description)
 
-# 已初始化标记
+#  # (description)
 initialized: true
 
 app:
@@ -520,18 +560,18 @@ redis:
   retry_on_timeout: true
 """
         
-        # 写入配置文件
+        #  # (description)
         CONFIG_PATH.write_text(config_content, encoding="utf-8")
         
-        # 2. 初始化数据库表结构
+        # 2.  # (description)
         await init_database_tables(config.database)
         
-        # 3. 初始化管理员和基础数据
+        # 3.  # (description)
         await init_admin_and_data(config.database, config.admin, jwt_salt)
         
         return {
             "success": True,
-            "msg": "系统初始化完成！请重启应用以生效",
+            "msg": "   ",
             "data": {
                 "admin_username": config.admin.username,
                 "app_port": config.app.port
@@ -539,12 +579,12 @@ redis:
         }
     except Exception as e:
         import traceback
-        return {"success": False, "msg": f"初始化失败: {str(e)}\n{traceback.format_exc()}"}
+        return {"success": False, "msg": f"   ? {str(e)}\n{traceback.format_exc()}"}
 
 
 @setup_app.get("/api/setup/status")
 async def get_setup_status():
-    """获取初始化状态"""
+    """Get initialization status"""
     initialized = False
     if CONFIG_PATH.exists() and CONFIG_PATH.is_file():
         try:
@@ -562,13 +602,13 @@ async def get_setup_status():
 
 
 def run_setup_server(host: str = "0.0.0.0", port: int = 9090):
-    """运行初始化服务器"""
+    """Setup wizard"""
     print("\n" + "=" * 60)
-    print("  🚀 系统初始化向导")
+    print("   System Setup Wizard")
     print("=" * 60)
-    print("\n  检测到系统尚未初始化，请访问以下地址完成配置：")
-    print(f"\n  ➜  http://localhost:{port}")
-    print(f"  ➜  http://127.0.0.1:{port}")
+    print("\n  System not yet initialized. Please visit the following address to complete configuration:")
+    print(f"\n    http://localhost:{port}")
+    print(f"    http://127.0.0.1:{port}")
     print("\n" + "=" * 60 + "\n")
     
     uvicorn.run(
@@ -581,3 +621,4 @@ def run_setup_server(host: str = "0.0.0.0", port: int = 9090):
 
 if __name__ == "__main__":
     run_setup_server()
+

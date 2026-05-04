@@ -16,9 +16,9 @@ class UserInfo(DataBaseModel):
     phone: Optional[str] = Field(default=None, max_length=30, description="手机号")
     nickname: Optional[str] = Field(default=None, max_length=255, description="昵称")
     avatar: Optional[str] = Field(default=None, max_length=512, description="头像")
-    gender: int = Field(default=0, description="性别（0未知，1男，2女）")
-    status: int = Field(default=1, description="用户状态（1启用，0禁用）")
-    user_type: int = Field(default=3, description="用户身份标识（0超级管理员，1管理员，2部门管理员，3普通用户）")
+    gender: int = Field(default=0, description="性别(0未知,1男,2女)")
+    status: int = Field(default=1, description="用户状态(1启用,0禁用)")
+    user_type: int = Field(default=3, description="用户身份标识(0超级管理员,1管理员,2部门管理员,3普通用户)")
     department_id: Optional[str] = Field(default=None, description="所属部门ID")
 
 
@@ -33,9 +33,9 @@ class AddUserParams(BaseModel):
     phone: Optional[str] = Field(default=None, max_length=30, description="手机号")
     nickname: Optional[str] = Field(default=None, max_length=255, description="昵称")
     avatar: Optional[str] = Field(default=None, max_length=512, description="头像")
-    gender: int = Field(default=0, description="性别（0未知，1男，2女）")
-    status: int = Field(default=1, description="用户状态（1启用，0禁用）")
-    user_type: int = Field(default=3, description="用户身份标识（0超级管理员，1管理员，2部门管理员，3普通用户）")
+    gender: int = Field(default=0, description="性别(0未知,1男,2女)")
+    status: int = Field(default=1, description="用户状态(1启用,0禁用)")
+    user_type: int = Field(default=3, description="用户身份标识(0超级管理员,1管理员,2部门管理员,3普通用户)")
     department_id: Optional[str] = Field(default=None, description="所属部门ID")
 
 
@@ -50,9 +50,9 @@ class UpdateUserParams(BaseModel):
     phone: Optional[str] = Field(default=None, max_length=30, description="手机号")
     nickname: Optional[str] = Field(default=None, max_length=255, description="昵称")
     avatar: Optional[str] = Field(default=None, max_length=512, description="头像")
-    gender: Optional[int] = Field(default=None, description="性别（0未知，1男，2女）")
-    status: Optional[int] = Field(default=None, description="用户状态（1启用，0禁用）")
-    user_type: Optional[int] = Field(default=None, description="用户身份标识（0超级管理员，1管理员，2部门管理员，3普通用户）")
+    gender: Optional[int] = Field(default=None, description="性别(0未知,1男,2女)")
+    status: Optional[int] = Field(default=None, description="用户状态(1启用,0禁用)")
+    user_type: Optional[int] = Field(default=None, description="用户身份标识(0超级管理员,1管理员,2部门管理员,3普通用户)")
     department_id: Optional[str] = Field(default=None, description="所属部门ID")
 
 
@@ -143,7 +143,7 @@ class UpdateBaseUserInfoParams(BaseModel):
     """
     model_config = ConfigDict()
     name: Optional[str] = Field(default=None, max_length=50, description="昵称")
-    gender: int = Field(default=0, description="性别（0未知，1男，2女）")
+    gender: int = Field(default=0, description="性别(0未知,1男,2女)")
 
 
 class UploadFileResponse(BaseResponse):

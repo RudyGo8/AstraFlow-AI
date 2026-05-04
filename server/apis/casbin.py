@@ -142,7 +142,7 @@ async def add_policy(
     添加策略规则
     
     - sub: 角色编码 (如 role_admin)
-    - obj: 资源路径/权限ID (支持通配符，如 /api/users/*)
+    - obj: 资源路径/权限ID (支持通配符,如 /api/users/*)
     - act: HTTP方法/权限类型 (menu/button 或 GET|POST|PUT|DELETE)
     - data_scope: 数据权限范围 (1=全部, 2=本部门及下属, 3=仅本部门, 4=仅本人)
     """
@@ -375,7 +375,7 @@ async def update_model(
     result = await CasbinEnforcer.update_model(params.model_text)
     if result:
         return ResponseUtil.success(msg="模型配置更新成功")
-    return ResponseUtil.error(msg="模型配置更新失败，请检查配置格式")
+    return ResponseUtil.error(msg="模型配置更新失败,请检查配置格式")
 
 
 @casbinAPI.post(

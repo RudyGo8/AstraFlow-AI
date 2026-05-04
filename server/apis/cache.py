@@ -75,12 +75,12 @@ async def get_cache_info(request: Request):
             if isinstance(value, dict):
                 db_info = value
             elif isinstance(value, str):
-                # 如果是字符串，则按原来的方式解析
+                # 如果是字符串,则按原来的方式解析
                 for item in value.split(','):
                     k, v = item.split('=')
                     db_info[k] = int(v)
             else:
-                # 其他类型，跳过
+                # 其他类型,跳过
                 continue
                 
             key_space_stats.append({
@@ -164,11 +164,11 @@ async def get_cache_info_detail(request: Request, cacheName: str = Path(descript
     redis_key = f'{cacheName}:{cacheKey}'
     cache_value = await request.app.state.redis.get(redis_key)
     
-    # 获取TTL（生存时间）
+    # 获取TTL(生存时间)
     ttl = await request.app.state.redis.ttl(redis_key)
     expire_time = None
     
-    # 如果TTL大于0，计算过期时间
+    # 如果TTL大于0,计算过期时间
     if ttl > 0:
         from datetime import datetime, timedelta
         expire_time = (datetime.now() + timedelta(seconds=ttl)).strftime('%Y-%m-%d %H:%M:%S')
@@ -212,7 +212,7 @@ async def delete_cache(request: Request, name: str = Path(description="缓存名
     cache_keys = await request.app.state.redis.keys(f'{name}*')
     if cache_keys:
         await request.app.state.redis.delete(*cache_keys)
-    return ResponseUtil.success(msg=f"删除{name}缓存成功！")
+    return ResponseUtil.success(msg=f"删除{name}缓存成功!")
 
 
 @cacheAPI.delete("/cacheKey/{key}", response_class=JSONResponse, response_model=BaseResponse,
@@ -224,7 +224,7 @@ async def delete_cache_key(request: Request, key: str = Path(description="缓存
     cache_keys = await request.app.state.redis.keys(f'*{key}')
     if cache_keys:
         await request.app.state.redis.delete(*cache_keys)
-    return ResponseUtil.success(msg=f"删除{key}缓存成功！")
+    return ResponseUtil.success(msg=f"删除{key}缓存成功!")
 
 
 @cacheAPI.delete("/clearAll", response_class=JSONResponse, response_model=BaseResponse, summary="删除所有缓存")
@@ -235,4 +235,4 @@ async def delete_all_cache(request: Request):
     cache_keys = await request.app.state.redis.keys()
     if cache_keys:
         await request.app.state.redis.delete(*cache_keys)
-    return ResponseUtil.success(msg="删除所有缓存成功！")
+    return ResponseUtil.success(msg="删除所有缓存成功!")

@@ -11,7 +11,7 @@ class BaseResponse(BaseModel):
     """
     model_config = ConfigDict(alias_generator=to_snake)
     code: int = Field(default=200, description="响应码")
-    msg: str = Field(default="操作成功！", description="响应信息")
+    msg: str = Field(default="操作成功!", description="响应信息")
     data: dict = Field(default=None, description="响应数据")
     success: bool = Field(default=True, description="操作是否成功")
     time: str = Field(default="", description="响应时间")

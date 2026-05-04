@@ -1,8 +1,8 @@
-# 应用基础配置
-# 此文件由系统初始化向导自动生成
-# 生成时间: 2026-05-01 00:22:19
+# 
+#  # (description)
+#  # (description)
 
-# 已初始化标记
+#  # (description)
 initialized: true
 
 app:
@@ -17,7 +17,7 @@ app:
 
 jwt:
   algorithm: "HS256"
-  secret_key: "4c305f1364ca251a831e02be6c764933ab47754c520fc63fea282fb21eb6c07f"
+  secret_key: "395219dd62c071413d7e451401141ac8a51eeb21d52d8b2b23cc24029f1456ef"
   salt: "fastapi-vue-admin"
   expire_minutes: 1440
   redis_expire_minutes: 30
@@ -25,10 +25,10 @@ jwt:
 database:
   engine: "mysql"
   host: "127.0.0.1"
-  port: 3306
+  port: 3307
   username: "root"
   password: "123456"
-  database: "fva"
+  database: "fva_db"
   pool_size: 10
   pool_timeout: 30
   echo: false

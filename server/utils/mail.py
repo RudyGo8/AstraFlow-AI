@@ -18,7 +18,7 @@ from utils.log import logger
 
 class Email:
     """
-    邮件发送类，用于发送邮件。
+    邮件发送类,用于发送邮件。
     支持从动态配置读取邮件服务器参数
     """
 
@@ -35,7 +35,7 @@ class Email:
     @classmethod
     async def _get_email_config(cls, request: Request) -> dict:
         """
-        获取邮件配置（优先从动态配置读取）
+        获取邮件配置(优先从动态配置读取)
         """
         dynamic_config = getattr(request.app.state, 'dynamic_config', None)
         
@@ -101,7 +101,7 @@ class Email:
         )
         subject = f"{system_name}-{title} Verification Code"
         
-        # 发件人名称：优先使用配置的名称，否则使用系统名称
+        # 发件人名称:优先使用配置的名称,否则使用系统名称
         sendName = email_cfg["from_name"] or system_name
         
         message = EmailMessage()
@@ -121,9 +121,9 @@ class Email:
                     email_cfg["port"],
                     context=context
                 ) as server:
-                    logger.info("SMTP连接成功，准备登录")
+                    logger.info("SMTP连接成功,准备登录")
                     server.login(email_cfg["username"], email_cfg["password"])
-                    logger.info("登录成功，准备发送邮件")
+                    logger.info("登录成功,准备发送邮件")
                     server.send_message(message)
                     logger.info("邮件发送完成")
 
@@ -134,7 +134,7 @@ class Email:
                 code,
                 ex=timedelta(minutes=2)
             )
-            logger.info(f"发送邮件至{mail}成功，验证码：{code}")
+            logger.info(f"发送邮件至{mail}成功,验证码:{code}")
             return True
         except Exception as e:
             logger.error(f"发送邮件失败: {type(e).__name__}: {e}")

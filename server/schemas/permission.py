@@ -11,7 +11,7 @@ class PermissionInfo(DataBaseModel):
     权限信息
     """
     model_config = ConfigDict(populate_by_name=True)
-    menu_type: int = Field(None, description="权限类型（0菜单、1按钮、2接口）")
+    menu_type: int = Field(None, description="权限类型(0菜单、1按钮、2接口)")
     parent_id: str = Field(None, description="父权限ID")
     name: str = Field(None, description="权限名称")
     path: str = Field(None, description="权限路径")
@@ -32,11 +32,11 @@ class PermissionInfo(DataBaseModel):
     order: int = Field(999, description="排序")
     authTitle: str = Field(None, description="权限标题")
     authMark: str = Field(None, description="权限标识")
-    min_user_type: int = Field(3, description="最低用户身份要求（0超级管理员，1管理员，2部门管理员，3普通用户）")
+    min_user_type: int = Field(3, description="最低用户身份要求(0超级管理员,1管理员,2部门管理员,3普通用户)")
     # 接口权限字段
     api_path: str = Field(None, description="API接口路径")
     api_method: list = Field(None, description="HTTP请求方法列表")
-    data_scope: int = Field(None, description="数据权限范围（1全部、2本部门及下属、3仅本部门、4仅本人）")
+    data_scope: int = Field(None, description="数据权限范围(1全部、2本部门及下属、3仅本部门、4仅本人)")
     remark: str = Field(None, description="备注说明")
 
 
@@ -52,7 +52,7 @@ class AddPermissionParams(BaseModel):
     新增权限参数
     """
     model_config = ConfigDict()
-    menu_type: int = Field(None, description="权限类型（0菜单、1按钮、2接口）")
+    menu_type: int = Field(None, description="权限类型(0菜单、1按钮、2接口)")
     parent_id: Optional[str] = Field(None, description="父权限ID")
     name: Optional[str] = Field(None, description="权限名称")
     path: Optional[str] = Field(None, description="权限路径")
@@ -73,11 +73,11 @@ class AddPermissionParams(BaseModel):
     order: Optional[int] = Field(999, description="排序")
     authTitle: Optional[str] = Field(None, description="权限标题")
     authMark: Optional[str] = Field(None, description="权限标识")
-    min_user_type: Optional[int] = Field(3, ge=0, le=3, description="最低用户身份要求（0超级管理员，1管理员，2部门管理员，3普通用户）")
+    min_user_type: Optional[int] = Field(3, ge=0, le=3, description="最低用户身份要求(0超级管理员,1管理员,2部门管理员,3普通用户)")
     # 接口权限字段
-    api_path: Optional[str] = Field(None, description="API接口路径（支持通配符，如 /api/user/*）")
-    api_method: Optional[List[str]] = Field(None, description="HTTP请求方法列表（如 ['GET', 'POST', 'PUT', 'DELETE']）")
-    data_scope: Optional[int] = Field(4, ge=1, le=4, description="数据权限范围（1全部、2本部门及下属、3仅本部门、4仅本人）")
+    api_path: Optional[str] = Field(None, description="API接口路径(支持通配符,如 /api/user/*)")
+    api_method: Optional[List[str]] = Field(None, description="HTTP请求方法列表(如 ['GET', 'POST', 'PUT', 'DELETE'])")
+    data_scope: Optional[int] = Field(4, ge=1, le=4, description="数据权限范围(1全部、2本部门及下属、3仅本部门、4仅本人)")
     remark: Optional[str] = Field(None, description="备注说明")
 
 
@@ -86,7 +86,7 @@ class UpdatePermissionParams(BaseModel):
     更新权限模型
     """
     model_config = ConfigDict()
-    menu_type: int = Field(None, description="权限类型（0菜单、1按钮、2接口）")
+    menu_type: int = Field(None, description="权限类型(0菜单、1按钮、2接口)")
     parent_id: Optional[str] = Field(None, description="父权限ID")
     name: Optional[str] = Field(None, description="权限名称")
     path: Optional[str] = Field(None, description="权限路径")
@@ -107,11 +107,11 @@ class UpdatePermissionParams(BaseModel):
     order: Optional[int] = Field(999, description="排序")
     authTitle: Optional[str] = Field(None, description="权限标题")
     authMark: Optional[str] = Field(None, description="权限标识")
-    min_user_type: Optional[int] = Field(3, ge=0, le=3, description="最低用户身份要求（0超级管理员，1管理员，2部门管理员，3普通用户）")
+    min_user_type: Optional[int] = Field(3, ge=0, le=3, description="最低用户身份要求(0超级管理员,1管理员,2部门管理员,3普通用户)")
     # 接口权限字段
-    api_path: Optional[str] = Field(None, description="API接口路径（支持通配符，如 /api/user/*）")
-    api_method: Optional[List[str]] = Field(None, description="HTTP请求方法列表（如 ['GET', 'POST', 'PUT', 'DELETE']）")
-    data_scope: Optional[int] = Field(None, ge=1, le=4, description="数据权限范围（1全部、2本部门及下属、3仅本部门、4仅本人）")
+    api_path: Optional[str] = Field(None, description="API接口路径(支持通配符,如 /api/user/*)")
+    api_method: Optional[List[str]] = Field(None, description="HTTP请求方法列表(如 ['GET', 'POST', 'PUT', 'DELETE'])")
+    data_scope: Optional[int] = Field(None, ge=1, le=4, description="数据权限范围(1全部、2本部门及下属、3仅本部门、4仅本人)")
     remark: Optional[str] = Field(None, description="备注说明")
 
 

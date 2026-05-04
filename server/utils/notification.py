@@ -134,7 +134,7 @@ class NotificationService:
         for user_id in target_user_ids:
             await self.increment_unread_count(user_id)
         
-        # 存储通知到 Redis（用于离线用户获取）
+        # 存储通知到 Redis(用于离线用户获取)
         await self._store_notification_to_redis(notification_id, message, target_user_ids)
         
         return {
@@ -149,7 +149,7 @@ class NotificationService:
         target_user_ids: List[str]
     ):
         """存储通知到 Redis"""
-        # 存储通知内容（24小时过期）
+        # 存储通知内容(24小时过期)
         key = f"{self.NOTIFICATION_KEY}:{notification_id}"
         await self._redis.setex(
             key,
@@ -164,7 +164,7 @@ class NotificationService:
             await self._redis.expire(user_key, timedelta(hours=24))
     
     async def get_pending_notifications(self, user_id: str) -> List[dict]:
-        """获取用户的待推送通知（用于 HTTP 轮询）"""
+        """获取用户的待推送通知(用于 HTTP 轮询)"""
         user_key = f"{self.NOTIFICATION_KEY}:pending:{user_id}"
         notification_ids = await self._redis.smembers(user_key)
         
@@ -232,14 +232,14 @@ class NotificationService:
         
         # 创建用户通知关联
         await UserNotification.create(
-            notification_id=notification.id,
-            user_id=user_id
+            notification=notification.id,
+            user=user_id
         )
         
         # 增加未读计数
         await self.increment_unread_count(user_id)
         
-        # 通过 WebSocket 推送（如果用户在线）
+        # 通过 WebSocket 推送(如果用户在线)
         message = {
             "type": "login_notification",
             "data": {

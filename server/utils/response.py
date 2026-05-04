@@ -10,83 +10,83 @@ from pydantic import BaseModel
 
 class HttpStatusConstant:
     """
-    定义 HTTP 状态码的常量，描述不同操作的响应结果。
+    定义 HTTP 状态码的常量,描述不同操作的响应结果。
 
     属性:
-        SUCCESS: 表示操作成功，HTTP 状态码 200。
-        CREATED: 表示资源已成功创建，HTTP 状态码 201。
-        ACCEPTED: 表示请求已被接受，HTTP 状态码 202。
-        NO_CONTENT: 表示操作成功但无内容返回，HTTP 状态码 204。
-        MOVED_PERM: 表示资源已被永久移除，HTTP 状态码 301。
-        SEE_OTHER: 表示重定向到其他资源，HTTP 状态码 303。
-        NOT_MODIFIED: 表示资源未被修改，HTTP 状态码 304。
-        BAD_REQUEST: 参数错误，HTTP 状态码 400。
-        UNAUTHORIZED: 表示未授权，HTTP 状态码 401。
-        FORBIDDEN: 表示禁止访问，HTTP 状态码 403。
-        NOT_FOUND: 表示资源或服务未找到，HTTP 状态码 404。
-        BAD_METHOD: 不允许的 HTTP 方法，HTTP 状态码 405。
-        CONFLICT: 表示资源冲突，HTTP 状态码 409。
-        UNSUPPORTED_TYPE: 不支持的数据或媒体类型，HTTP 状态码 415。
-        ERROR: 表示系统内部错误，HTTP 状态码 500。
-        NOT_IMPLEMENTED: 接口未实现，HTTP 状态码 501。
-        WARN: 系统警告消息，自定义状态码 601。
+        SUCCESS: 表示操作成功,HTTP 状态码 200。
+        CREATED: 表示资源已成功创建,HTTP 状态码 201。
+        ACCEPTED: 表示请求已被接受,HTTP 状态码 202。
+        NO_CONTENT: 表示操作成功但无内容返回,HTTP 状态码 204。
+        MOVED_PERM: 表示资源已被永久移除,HTTP 状态码 301。
+        SEE_OTHER: 表示重定向到其他资源,HTTP 状态码 303。
+        NOT_MODIFIED: 表示资源未被修改,HTTP 状态码 304。
+        BAD_REQUEST: 参数错误,HTTP 状态码 400。
+        UNAUTHORIZED: 表示未授权,HTTP 状态码 401。
+        FORBIDDEN: 表示禁止访问,HTTP 状态码 403。
+        NOT_FOUND: 表示资源或服务未找到,HTTP 状态码 404。
+        BAD_METHOD: 不允许的 HTTP 方法,HTTP 状态码 405。
+        CONFLICT: 表示资源冲突,HTTP 状态码 409。
+        UNSUPPORTED_TYPE: 不支持的数据或媒体类型,HTTP 状态码 415。
+        ERROR: 表示系统内部错误,HTTP 状态码 500。
+        NOT_IMPLEMENTED: 接口未实现,HTTP 状态码 501。
+        WARN: 系统警告消息,自定义状态码 601。
     """
 
     SUCCESS = 200
-    """表示操作成功，HTTP 状态码 200。"""
+    """表示操作成功,HTTP 状态码 200。"""
 
     CREATED = 201
-    """表示资源已成功创建，HTTP 状态码 201。"""
+    """表示资源已成功创建,HTTP 状态码 201。"""
 
     ACCEPTED = 202
-    """表示请求已被接受，HTTP 状态码 202。"""
+    """表示请求已被接受,HTTP 状态码 202。"""
 
     NO_CONTENT = 204
-    """表示操作成功但无内容返回，HTTP 状态码 204。"""
+    """表示操作成功但无内容返回,HTTP 状态码 204。"""
 
     MOVED_PERM = 301
-    """表示资源已被永久移除，HTTP 状态码 301。"""
+    """表示资源已被永久移除,HTTP 状态码 301。"""
 
     SEE_OTHER = 303
-    """表示重定向到其他资源，HTTP 状态码 303。"""
+    """表示重定向到其他资源,HTTP 状态码 303。"""
 
     NOT_MODIFIED = 304
-    """表示资源未被修改，HTTP 状态码 304。"""
+    """表示资源未被修改,HTTP 状态码 304。"""
 
     BAD_REQUEST = 400
-    """参数错误，HTTP 状态码 400。"""
+    """参数错误,HTTP 状态码 400。"""
 
     UNAUTHORIZED = 401
-    """表示未授权，HTTP 状态码 401。"""
+    """表示未授权,HTTP 状态码 401。"""
 
     FORBIDDEN = 403
-    """表示禁止访问，HTTP 状态码 403。"""
+    """表示禁止访问,HTTP 状态码 403。"""
 
     NOT_FOUND = 404
-    """表示资源或服务未找到，HTTP 状态码 404。"""
+    """表示资源或服务未找到,HTTP 状态码 404。"""
 
     BAD_METHOD = 405
-    """不允许的 HTTP 方法，HTTP 状态码 405。"""
+    """不允许的 HTTP 方法,HTTP 状态码 405。"""
 
     CONFLICT = 409
-    """表示资源冲突，HTTP 状态码 409。"""
+    """表示资源冲突,HTTP 状态码 409。"""
 
     UNSUPPORTED_TYPE = 415
-    """不支持的数据或媒体类型，HTTP 状态码 415。"""
+    """不支持的数据或媒体类型,HTTP 状态码 415。"""
 
     ERROR = 500
-    """表示系统内部错误，HTTP 状态码 500。"""
+    """表示系统内部错误,HTTP 状态码 500。"""
 
     NOT_IMPLEMENTED = 501
-    """接口未实现，HTTP 状态码 501。"""
+    """接口未实现,HTTP 状态码 501。"""
 
     WARN = 601
-    """系统警告消息，自定义状态码 601。"""
+    """系统警告消息,自定义状态码 601。"""
 
 
 class ResponseUtil:
     """
-    响应工具类，用于统一封装接口返回格式。
+    响应工具类,用于统一封装接口返回格式。
     """
 
     @classmethod
@@ -106,7 +106,7 @@ class ResponseUtil:
         :param code: 状态码
         :param msg: 响应消息
         :param data: 响应数据
-        :param rows: 响应行数据（通常用于分页）
+        :param rows: 响应行数据(通常用于分页)
         :param dict_content: 自定义字典内容
         :param model_content: 自定义 Pydantic 模型内容
         :param success: 是否成功
@@ -144,9 +144,9 @@ class ResponseUtil:
         """
         成功响应方法。
         :param code: 响应状态码
-        :param msg: 响应消息，默认为 "操作成功"
+        :param msg: 响应消息,默认为 "操作成功"
         :param data: 响应数据
-        :param rows: 响应行数据（通常用于分页）
+        :param rows: 响应行数据(通常用于分页)
         :param dict_content: 自定义字典内容
         :param model_content: 自定义 Pydantic 模型内容
         :return: JSONResponse 对象
@@ -175,9 +175,9 @@ class ResponseUtil:
         """
         失败响应方法。
         :param code: 响应状态码
-        :param msg: 响应消息，默认为 "操作失败"
+        :param msg: 响应消息,默认为 "操作失败"
         :param data: 响应数据
-        :param rows: 响应行数据（通常用于分页）
+        :param rows: 响应行数据(通常用于分页)
         :param dict_content: 自定义字典内容
         :param model_content: 自定义 Pydantic 模型内容
         :return: JSONResponse 对象
@@ -197,7 +197,7 @@ class ResponseUtil:
     def unauthorized(
             cls,
             code: int = HttpStatusConstant.UNAUTHORIZED,
-            msg: str = "登录信息已过期，访问系统资源失败",
+            msg: str = "登录信息已过期,访问系统资源失败",
             data: Optional[Any] = None,
             rows: Optional[Any] = None,
             dict_content: Optional[Dict] = None,
@@ -206,9 +206,9 @@ class ResponseUtil:
         """
         未认证响应方法。
         :param code: 响应状态码
-        :param msg: 响应消息，默认为 "登录信息已过期，访问系统资源失败"
+        :param msg: 响应消息,默认为 "登录信息已过期,访问系统资源失败"
         :param data: 响应数据
-        :param rows: 响应行数据（通常用于分页）
+        :param rows: 响应行数据(通常用于分页)
         :param dict_content: 自定义字典内容
         :param model_content: 自定义 Pydantic 模型内容
         :return: JSONResponse 对象
@@ -237,9 +237,9 @@ class ResponseUtil:
         """
         未授权响应方法。
         :param code: 响应状态码
-        :param msg: 响应消息，默认为 "该用户无此接口权限"
+        :param msg: 响应消息,默认为 "该用户无此接口权限"
         :param data: 响应数据
-        :param rows: 响应行数据（通常用于分页）
+        :param rows: 响应行数据(通常用于分页)
         :param dict_content: 自定义字典内容
         :param model_content: 自定义 Pydantic 模型内容
         :return: JSONResponse 对象
@@ -268,9 +268,9 @@ class ResponseUtil:
         """
         错误响应方法。
         :param code: 响应状态码
-        :param msg: 响应消息，默认为 "接口异常"
+        :param msg: 响应消息,默认为 "接口异常"
         :param data: 响应数据
-        :param rows: 响应行数据（通常用于分页）
+        :param rows: 响应行数据(通常用于分页)
         :param dict_content: 自定义字典内容
         :param model_content: 自定义 Pydantic 模型内容
         :return: JSONResponse 对象

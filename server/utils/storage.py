@@ -47,7 +47,7 @@ class BaseStorage(ABC):
         """
         获取文件访问URL
         :param key: 文件存储key
-        :param expires: URL有效期（秒）
+        :param expires: URL有效期(秒)
         :return: 文件访问URL
         """
         pass
@@ -371,7 +371,7 @@ class StorageFactory:
         if storage_type == StorageType.LOCAL:
             base_path = await dynamic_config.get("upload_local_path", "uploads")
             url_prefix = await dynamic_config.get("upload_url_prefix", "/files")
-            # 确保 url_prefix 不包含 /api 前缀（前端代理会处理）
+            # 确保 url_prefix 不包含 /api 前缀(前端代理会处理)
             if url_prefix.startswith("/api"):
                 url_prefix = url_prefix[4:]  # 去掉 /api 前缀
             return LocalStorage(base_path, url_prefix)

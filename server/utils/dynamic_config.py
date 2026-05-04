@@ -20,23 +20,23 @@ class DynamicConfigService:
     # Redis 配置前缀
     CONFIG_PREFIX = f"{RedisKeyConfig.SYSTEM_CONFIG.key}:"
     
-    # 默认配置定义（首次启动时初始化到数据库）
+    # 默认配置定义(首次启动时初始化到数据库)
     DEFAULT_CONFIGS = [
         # 邮件配置
         {"group": ConfigGroup.EMAIL, "key": "email_host", "name": "SMTP服务器", "value": "smtp.qq.com", "type": True, "remark": "SMTP服务器地址"},
-        {"group": ConfigGroup.EMAIL, "key": "email_port", "name": "SMTP端口", "value": "465", "type": True, "remark": "SMTP端口，SSL:465, TLS:587"},
+        {"group": ConfigGroup.EMAIL, "key": "email_port", "name": "SMTP端口", "value": "465", "type": True, "remark": "SMTP端口,SSL:465, TLS:587"},
         {"group": ConfigGroup.EMAIL, "key": "email_username", "name": "邮箱账号", "value": "xiaochao.it@qq.com", "type": True, "remark": "发件邮箱账号"},
-        {"group": ConfigGroup.EMAIL, "key": "email_password", "name": "邮箱密码/授权码", "value": "zsgwglsoywuefjfe", "type": True, "remark": "邮箱授权码（非登录密码）"},
+        {"group": ConfigGroup.EMAIL, "key": "email_password", "name": "邮箱密码/授权码", "value": "zsgwglsoywuefjfe", "type": True, "remark": "邮箱授权码(非登录密码)"},
         {"group": ConfigGroup.EMAIL, "key": "email_from_addr", "name": "发件人地址", "value": "xiaochao.it@qq.com", "type": True, "remark": "发件人显示地址"},
-        {"group": ConfigGroup.EMAIL, "key": "email_from_name", "name": "发件人名称", "value": "rudy", "type": True, "remark": "发件人显示名称，如：系统管理员"},
+        {"group": ConfigGroup.EMAIL, "key": "email_from_name", "name": "发件人名称", "value": "rudy", "type": True, "remark": "发件人显示名称,如:系统管理员"},
         {"group": ConfigGroup.EMAIL, "key": "email_use_ssl", "name": "启用SSL", "value": "true", "type": True, "remark": "是否启用SSL加密"},
-        {"group": ConfigGroup.EMAIL, "key": "email_timeout", "name": "超时时间", "value": "30", "type": True, "remark": "邮件发送超时时间（秒）"},
+        {"group": ConfigGroup.EMAIL, "key": "email_timeout", "name": "超时时间", "value": "30", "type": True, "remark": "邮件发送超时时间(秒)"},
         
         # 地图配置
-        {"group": ConfigGroup.MAP, "key": "map_provider", "name": "地图服务商", "value": "baidu", "type": True, "remark": "地图服务提供商：baidu/amap/tencent"},
+        {"group": ConfigGroup.MAP, "key": "map_provider", "name": "地图服务商", "value": "baidu", "type": True, "remark": "地图服务提供商:baidu/amap/tencent"},
         {"group": ConfigGroup.MAP, "key": "map_ak", "name": "地图AK", "value": "", "type": True, "remark": "地图服务访问密钥"},
         {"group": ConfigGroup.MAP, "key": "map_sk", "name": "地图SK", "value": "", "type": True, "remark": "地图服务安全密钥"},
-        {"group": ConfigGroup.MAP, "key": "map_timeout", "name": "超时时间", "value": "10", "type": True, "remark": "地图API超时时间（秒）"},
+        {"group": ConfigGroup.MAP, "key": "map_timeout", "name": "超时时间", "value": "10", "type": True, "remark": "地图API超时时间(秒)"},
         
         # 系统配置
         {"group": ConfigGroup.SYSTEM, "key": "system_name", "name": "系统名称", "value": "FastAPI-Vue-Admin", "type": True, "remark": "系统显示名称"},
@@ -46,19 +46,19 @@ class DynamicConfigService:
         
         # 安全配置
         {"group": ConfigGroup.SECURITY, "key": "multi_login_allowed", "name": "允许多设备登录", "value": "true", "type": True, "remark": "是否允许同一用户多设备登录"},
-        {"group": ConfigGroup.SECURITY, "key": "login_expire_minutes", "name": "登录有效期", "value": "1440", "type": True, "remark": "登录令牌有效期（分钟）"},
+        {"group": ConfigGroup.SECURITY, "key": "login_expire_minutes", "name": "登录有效期", "value": "1440", "type": True, "remark": "登录令牌有效期(分钟)"},
         
         # 账户配置
         {"group": ConfigGroup.ACCOUNT, "key": "account_captcha_enabled", "name": "启用验证码", "value": "true", "type": True, "remark": "登录是否需要验证码"},
-        {"group": ConfigGroup.ACCOUNT, "key": "account_captcha_type", "name": "验证码类型", "value": "0", "type": True, "remark": "验证码类型：0=算术题，1=字母数字"},
+        {"group": ConfigGroup.ACCOUNT, "key": "account_captcha_type", "name": "验证码类型", "value": "0", "type": True, "remark": "验证码类型:0=算术题,1=字母数字"},
         {"group": ConfigGroup.ACCOUNT, "key": "account_register_enabled", "name": "开放注册", "value": "true", "type": True, "remark": "是否开放用户注册"},
         {"group": ConfigGroup.ACCOUNT, "key": "default_department_id", "name": "默认部门", "value": "", "type": True, "remark": "新用户默认部门ID"},
         {"group": ConfigGroup.ACCOUNT, "key": "default_role_id", "name": "默认角色", "value": "", "type": True, "remark": "新用户默认角色ID"},
         
         # 上传配置 - 基础
-        {"group": ConfigGroup.UPLOAD, "key": "upload_storage_type", "name": "存储类型", "value": "local", "type": True, "remark": "文件存储类型：local/aliyun_oss/tencent_cos/qiniu/minio"},
-        {"group": ConfigGroup.UPLOAD, "key": "upload_max_size", "name": "单文件大小限制", "value": "100", "type": True, "remark": "单个文件上传的最大大小（MB）"},
-        {"group": ConfigGroup.UPLOAD, "key": "upload_allowed_extensions", "name": "允许的扩展名", "value": "bmp,gif,jpg,jpeg,png,webp,doc,docx,xls,xlsx,ppt,pptx,pdf,txt,zip,rar", "type": True, "remark": "允许上传的文件扩展名，逗号分隔"},
+        {"group": ConfigGroup.UPLOAD, "key": "upload_storage_type", "name": "存储类型", "value": "local", "type": True, "remark": "文件存储类型:local/aliyun_oss/tencent_cos/qiniu/minio"},
+        {"group": ConfigGroup.UPLOAD, "key": "upload_max_size", "name": "单文件大小限制", "value": "100", "type": True, "remark": "单个文件上传的最大大小(MB)"},
+        {"group": ConfigGroup.UPLOAD, "key": "upload_allowed_extensions", "name": "允许的扩展名", "value": "bmp,gif,jpg,jpeg,png,webp,doc,docx,xls,xlsx,ppt,pptx,pdf,txt,zip,rar", "type": True, "remark": "允许上传的文件扩展名,逗号分隔"},
         {"group": ConfigGroup.UPLOAD, "key": "upload_local_path", "name": "本地存储路径", "value": "uploads", "type": True, "remark": "本地文件存储目录"},
         {"group": ConfigGroup.UPLOAD, "key": "upload_url_prefix", "name": "访问URL前缀", "value": "/files", "type": True, "remark": "文件访问URL前缀"},
         
@@ -66,15 +66,15 @@ class DynamicConfigService:
         {"group": ConfigGroup.UPLOAD, "key": "aliyun_oss_access_key", "name": "阿里云AccessKey", "value": "", "type": True, "remark": "阿里云OSS AccessKey ID"},
         {"group": ConfigGroup.UPLOAD, "key": "aliyun_oss_secret_key", "name": "阿里云SecretKey", "value": "", "type": True, "remark": "阿里云OSS AccessKey Secret"},
         {"group": ConfigGroup.UPLOAD, "key": "aliyun_oss_bucket", "name": "阿里云Bucket", "value": "", "type": True, "remark": "阿里云OSS Bucket名称"},
-        {"group": ConfigGroup.UPLOAD, "key": "aliyun_oss_endpoint", "name": "阿里云Endpoint", "value": "", "type": True, "remark": "阿里云OSS Endpoint，如：oss-cn-hangzhou.aliyuncs.com"},
-        {"group": ConfigGroup.UPLOAD, "key": "aliyun_oss_domain", "name": "阿里云自定义域名", "value": "", "type": True, "remark": "阿里云OSS自定义域名（可选）"},
+        {"group": ConfigGroup.UPLOAD, "key": "aliyun_oss_endpoint", "name": "阿里云Endpoint", "value": "", "type": True, "remark": "阿里云OSS Endpoint,如:oss-cn-hangzhou.aliyuncs.com"},
+        {"group": ConfigGroup.UPLOAD, "key": "aliyun_oss_domain", "name": "阿里云自定义域名", "value": "", "type": True, "remark": "阿里云OSS自定义域名(可选)"},
         
         # 腾讯云COS配置
         {"group": ConfigGroup.UPLOAD, "key": "tencent_cos_secret_id", "name": "腾讯云SecretId", "value": "", "type": True, "remark": "腾讯云COS SecretId"},
         {"group": ConfigGroup.UPLOAD, "key": "tencent_cos_secret_key", "name": "腾讯云SecretKey", "value": "", "type": True, "remark": "腾讯云COS SecretKey"},
         {"group": ConfigGroup.UPLOAD, "key": "tencent_cos_bucket", "name": "腾讯云Bucket", "value": "", "type": True, "remark": "腾讯云COS Bucket名称"},
-        {"group": ConfigGroup.UPLOAD, "key": "tencent_cos_region", "name": "腾讯云Region", "value": "", "type": True, "remark": "腾讯云COS Region，如：ap-guangzhou"},
-        {"group": ConfigGroup.UPLOAD, "key": "tencent_cos_domain", "name": "腾讯云自定义域名", "value": "", "type": True, "remark": "腾讯云COS自定义域名（可选）"},
+        {"group": ConfigGroup.UPLOAD, "key": "tencent_cos_region", "name": "腾讯云Region", "value": "", "type": True, "remark": "腾讯云COS Region,如:ap-guangzhou"},
+        {"group": ConfigGroup.UPLOAD, "key": "tencent_cos_domain", "name": "腾讯云自定义域名", "value": "", "type": True, "remark": "腾讯云COS自定义域名(可选)"},
         
         # 七牛云配置
         {"group": ConfigGroup.UPLOAD, "key": "qiniu_access_key", "name": "七牛云AccessKey", "value": "", "type": True, "remark": "七牛云AccessKey"},
@@ -83,7 +83,7 @@ class DynamicConfigService:
         {"group": ConfigGroup.UPLOAD, "key": "qiniu_domain", "name": "七牛云域名", "value": "", "type": True, "remark": "七牛云访问域名"},
         
         # MinIO配置
-        {"group": ConfigGroup.UPLOAD, "key": "minio_endpoint", "name": "MinIO地址", "value": "", "type": True, "remark": "MinIO服务地址，如：localhost:9000"},
+        {"group": ConfigGroup.UPLOAD, "key": "minio_endpoint", "name": "MinIO地址", "value": "", "type": True, "remark": "MinIO服务地址,如:localhost:9000"},
         {"group": ConfigGroup.UPLOAD, "key": "minio_access_key", "name": "MinIO AccessKey", "value": "", "type": True, "remark": "MinIO AccessKey"},
         {"group": ConfigGroup.UPLOAD, "key": "minio_secret_key", "name": "MinIO SecretKey", "value": "", "type": True, "remark": "MinIO SecretKey"},
         {"group": ConfigGroup.UPLOAD, "key": "minio_bucket", "name": "MinIO Bucket", "value": "", "type": True, "remark": "MinIO Bucket名称"},
@@ -100,7 +100,7 @@ class DynamicConfigService:
         """
         for cfg in self.DEFAULT_CONFIGS:
             try:
-                # 尝试查询（可能 group 字段不存在）
+                # 尝试查询(可能 group 字段不存在)
                 existing = await SystemConfig.filter(key=cfg["key"], is_del=False).first()
                 if not existing:
                     # 创建时尝试包含 group 字段
@@ -114,7 +114,7 @@ class DynamicConfigService:
                             remark=cfg.get("remark", "")
                         )
                     except Exception:
-                        # 如果 group 字段不存在，不带 group 创建
+                        # 如果 group 字段不存在,不带 group 创建
                         await SystemConfig.create(
                             name=cfg["name"],
                             key=cfg["key"],
@@ -148,7 +148,7 @@ class DynamicConfigService:
     
     async def get(self, key: str, default: Any = None) -> Optional[str]:
         """
-        获取配置值（优先从 Redis 读取）
+        获取配置值(优先从 Redis 读取)
         
         :param key: 配置键名
         :param default: 默认值
@@ -159,7 +159,7 @@ class DynamicConfigService:
         if value is not None:
             return value
         
-        # Redis 中不存在，从数据库读取并缓存
+        # Redis 中不存在,从数据库读取并缓存
         config = await SystemConfig.get_or_none(key=key, is_del=False)
         if config:
             await self.redis.set(redis_key, config.value)
@@ -193,11 +193,11 @@ class DynamicConfigService:
     
     async def set(self, key: str, value: str, name: str = None, group: str = None, remark: str = None) -> bool:
         """
-        设置配置值（同时更新数据库和 Redis）
+        设置配置值(同时更新数据库和 Redis)
         
         :param key: 配置键名
         :param value: 配置值
-        :param name: 配置名称（新建时必填）
+        :param name: 配置名称(新建时必填)
         :param group: 配置分组
         :param remark: 备注
         :return: 是否成功
@@ -235,7 +235,7 @@ class DynamicConfigService:
     
     async def delete(self, key: str) -> bool:
         """
-        删除配置（软删除数据库记录，删除 Redis 缓存）
+        删除配置(软删除数据库记录,删除 Redis 缓存)
         """
         try:
             config = await SystemConfig.get_or_none(key=key, is_del=False)
@@ -275,7 +275,7 @@ class DynamicConfigService:
                 "id", "key", "name", "value", "group", "type", "remark"
             )
         except Exception:
-            # group 字段可能不存在，回退到不带 group 的查询
+            # group 字段可能不存在,回退到不带 group 的查询
             configs = await SystemConfig.filter(is_del=False).order_by("key").values(
                 "id", "key", "name", "value", "type", "remark"
             )
@@ -339,7 +339,7 @@ class DynamicConfigService:
         logger.info("配置已从数据库刷新")
 
 
-# 全局配置服务实例（需要在应用启动时初始化）
+# 全局配置服务实例(需要在应用启动时初始化)
 _dynamic_config: Optional[DynamicConfigService] = None
 
 

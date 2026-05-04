@@ -12,7 +12,7 @@ _c_buffer = None
 
 
 def _init_searcher():
-    """初始化 ip2region searcher，使用内存缓存模式以支持并发"""
+    """初始化 ip2region searcher,使用内存缓存模式以支持并发"""
     global _searcher, _c_buffer
     if _searcher is not None:
         return
@@ -25,7 +25,7 @@ def _init_searcher():
     except Exception as e:
         raise RuntimeError(f"ip2region xdb 文件验证失败: {str(e)}")
     
-    # 加载整个 xdb 到内存，支持并发查询
+    # 加载整个 xdb 到内存,支持并发查询
     try:
         _c_buffer = util.load_content_from_file(db_path)
         _searcher = xdb.new_with_buffer(util.IPv4, _c_buffer)
@@ -49,7 +49,7 @@ def get_ip_location(ip: str) -> str:
     获取 IP 对应的地理位置信息
     
     :param ip: 需要查询的 IP 地址
-    :return: 地理位置信息字符串，格式：国家|省份|城市|运营商
+    :return: 地理位置信息字符串,格式:国家|省份|城市|运营商
     """
     if not isinstance(ip, str):
         return "无效IP"
@@ -87,8 +87,8 @@ def _parse_region(region: str) -> str:
     """
     解析 ip2region 返回的 region 字符串
     
-    ip2region 返回格式：国家|省份|城市|网络运营商
-    例如：中国|广东省|深圳市|电信
+    ip2region 返回格式:国家|省份|城市|网络运营商
+    例如:中国|广东省|深圳市|电信
     
     :param region: ip2region 返回的原始字符串
     :return: 处理后的地理位置字符串
