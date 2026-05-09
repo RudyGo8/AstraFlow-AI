@@ -1,103 +1,99 @@
-
 from .sa_orm import fields
 
 from .common import BaseModel
 
 
 class SystemLoginLog(BaseModel):
-    """
-    System Login Log Model
-    """
+    """系统登录日志模型。"""
 
     user_id = fields.ForeignKeyField(
         "system.SystemUser",
         related_name="login_logs",
-        description="鐢ㄦ埛ID",
-        source_field="user_id"
+        description="用户 ID",
+        source_field="user_id",
     )
     """
-    鐢ㄦ埛ID銆?
-    - 澶栭敭鍏宠仈鍒?User 琛ㄣ?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 user_id銆?
+    用户 ID。
+    - 外键关联到 User 表
+    - 映射到数据库字段 user_id
     """
 
     login_ip = fields.CharField(
         max_length=256,
-        description="鐧诲綍IP鍦板潃",
-        source_field="login_ip"
+        description="登录 IP 地址",
+        source_field="login_ip",
     )
     """
-    鐧诲綍IP鍦板潃銆?
-    - 鏈澶ч暱搴︿负 50 涓瓧绗︺?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 login_ip銆?
+    登录 IP 地址。
+    - 映射到数据库字段 login_ip
     """
 
     login_location = fields.CharField(
         max_length=255,
         null=True,
-        description="Login Location",
-        source_field="login_location"
+        description="登录地点",
+        source_field="login_location",
     )
     """
-    鐧诲綍鍦扮偣銆?
-    - 鏍规嵁 IP 鍦板潃瑙f瀽鐨勫湴鐞嗕綅缃俊鎭?
-    - 鏈澶ч暱搴︿负 255 涓瓧绗︺?
-    - 鍏佽涓虹銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 login_location銆?
+    登录地点。
+    - 根据 IP 地址解析出的地理位置信息
+    - 最大长度为 255 个字符
+    - 允许为空
+    - 映射到数据库字段 login_location
     """
 
     browser = fields.CharField(
         max_length=255,
         null=True,
-        description="Browser Type",
-        source_field="browser"
+        description="浏览器类型",
+        source_field="browser",
     )
     """
-    娴忚鍣ㄧ被鍨嬨?
-    - 璁板綍鐢ㄦ埛鐧诲綍鏃朵娇鐢ㄧ殑娴忚鍣ㄧ被鍨嬨?
-    - 鏈澶ч暱搴︿负 255 涓瓧绗︺?
-    - 鍏佽涓虹銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 browser銆?
+    浏览器类型。
+    - 记录用户登录时使用的浏览器类型
+    - 最大长度为 255 个字符
+    - 允许为空
+    - 映射到数据库字段 browser
     """
 
     os = fields.CharField(
         max_length=255,
         null=True,
-        description="鎿嶄綔绯荤粺",
-        source_field="os"
+        description="操作系统",
+        source_field="os",
     )
     """
-    鎿嶄綔绯荤粺銆?
-    - 璁板綍鐢ㄦ埛鐧诲綍鏃朵娇鐢ㄧ殑鎿嶄綔绯荤粺銆?
-    - 鏈澶ч暱搴︿负 255 涓瓧绗︺?
-    - 鍏佽涓虹銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 os銆?
+    操作系统。
+    - 记录用户登录时使用的操作系统
+    - 最大长度为 255 个字符
+    - 允许为空
+    - 映射到数据库字段 os
     """
 
     status = fields.SmallIntField(
         default=1,
-        description="Login Status (1 success, 0 failure)",
-        source_field="status"
+        description="登录状态（1 成功，0 失败）",
+        source_field="status",
     )
     """
-    鐧诲綍鐘舵併?
-    - 1锛氭垚鍔?
-    - 0锛氬け璐?
-    - 榛樿涓?1銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 status銆?
+    登录状态。
+    - 1：成功
+    - 0：失败
+    - 默认值为 1
+    - 映射到数据库字段 status
     """
 
     session_id = fields.CharField(
         max_length=36,
         null=True,
-        description="浼氳瘽ID",
-        source_field="session_id"
+        description="会话 ID",
+        source_field="session_id",
     )
     """
-    浼氳瘽ID銆?
-    - 璁板綍鐢ㄦ埛鐧诲綍鏃剁殑浼氳瘽ID銆?
-    - 鍏佽涓虹銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 session_id銆?
+    会话 ID。
+    - 记录用户登录时的会话标识
+    - 允许为空
+    - 映射到数据库字段 session_id
     """
 
     class Meta:
@@ -107,182 +103,178 @@ class SystemLoginLog(BaseModel):
 
 
 class SystemOperationLog(BaseModel):
-    """
-    鎿嶄綔鏃ュ織琛ㄦā鍨嬨?
-    """
+    """系统操作日志模型。"""
 
     operation_name = fields.CharField(
         max_length=255,
-        description="鎿嶄綔鍚嶇О",
-        source_field="operation_name"
+        description="操作名称",
+        source_field="operation_name",
     )
     """
-    鎿嶄綔鍚嶇О銆?
-    - 鏈澶ч暱搴︿负 255 涓瓧绗︺?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 operation_name銆?
+    操作名称。
+    - 最大长度为 255 个字符
+    - 映射到数据库字段 operation_name
     """
 
     operation_type = fields.SmallIntField(
-        description="鎿嶄綔绫诲瀷锛堝鍒犳敼鏌ワ級",
-        source_field="operation_type"
+        description="操作类型（增删改查等）",
+        source_field="operation_type",
     )
     """
-    鎿嶄綔绫诲瀷銆?
-    - 澧炪佸垹銆佹敼銆佹煡绛夋搷浣滅被鍨嬨?
-    - 鏈澶ч暱搴︿负 50 涓瓧绗︺?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 operation_type銆?
+    操作类型。
+    - 表示新增、删除、修改、查询等操作分类
+    - 映射到数据库字段 operation_type
     """
 
     request_path = fields.TextField(
-        description="璇锋眰璺緞",
-        source_field="request_path"
+        description="请求路径",
+        source_field="request_path",
     )
     """
-    璇锋眰璺緞銆?
-    - 璁板綍鐢ㄦ埛璇锋眰鐨?API 璺緞銆?
-    - 鏈澶ч暱搴︿负 255 涓瓧绗︺?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 request_path銆?
+    请求路径。
+    - 记录用户请求的 API 路径
+    - 映射到数据库字段 request_path
     """
 
     request_method = fields.CharField(
         max_length=10,
-        description="璇锋眰鏂规硶",
-        source_field="request_method"
+        description="请求方法",
+        source_field="request_method",
     )
     """
-    璇锋眰鏂规硶銆?
-    - 璁板綍鐢ㄦ埛璇锋眰鐨?HTTP 鏂规硶锛堝 GET銆丳OST銆丳UT銆丏ELETE锛夈?
-    - 鏈澶ч暱搴︿负 10 涓瓧绗︺?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 request_method銆?
+    请求方法。
+    - 记录用户请求的 HTTP 方法，如 GET、POST、PUT、DELETE
+    - 最大长度为 10 个字符
+    - 映射到数据库字段 request_method
     """
 
     operator = fields.ForeignKeyField(
         "system.SystemUser",
         related_name="operation_logs",
         null=True,
-        description="鎿嶄綔浜哄憳",
-        source_field="operator_id"
+        description="操作人员",
+        source_field="operator_id",
     )
     """
-    鎿嶄綔浜哄憳銆?
-    - 澶栭敭鍏宠仈鍒?User 琛ㄣ?
-    - 鍏佽涓虹銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 operator_id銆?
+    操作人员。
+    - 外键关联到 User 表
+    - 允许为空
+    - 映射到数据库字段 operator_id
     """
 
     host = fields.CharField(
         max_length=50,
-        description="涓绘満鍦板潃",
-        source_field="host"
+        description="主机地址",
+        source_field="host",
     )
     """
-    涓绘満鍦板潃銆?
-    - 璁板綍鐢ㄦ埛璇锋眰鐨?IP 鍦板潃銆?
-    - 鏈澶ч暱搴︿负 50 涓瓧绗︺?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 host銆?
+    主机地址。
+    - 记录请求来源的 IP 地址
+    - 最大长度为 50 个字符
+    - 映射到数据库字段 host
     """
 
     location = fields.CharField(
         max_length=255,
         null=True,
-        description="鎿嶄綔鍦扮偣",
-        source_field="location"
+        description="操作地点",
+        source_field="location",
     )
     """
-    鎿嶄綔鍦扮偣銆?
-    - 鏍规嵁 IP 鍦板潃瑙f瀽鐨勫湴鐞嗕綅缃俊鎭?
-    - 鏈澶ч暱搴︿负 255 涓瓧绗︺?
-    - 鍏佽涓虹銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 location銆?
+    操作地点。
+    - 根据 IP 地址解析出的地理位置信息
+    - 最大长度为 255 个字符
+    - 允许为空
+    - 映射到数据库字段 location
     """
 
     user_agent = fields.TextField(
         null=True,
-        description="User Agent",
-        source_field="user_agent"
+        description="User-Agent",
+        source_field="user_agent",
     )
     """
-    鐢ㄦ埛璇锋眰澶淬?
-    - 璁板綍鐢ㄦ埛璇锋眰鐨?User-Agent 淇伅銆?
-    - 鍏佽涓虹銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 user_agent銆?
+    用户请求头。
+    - 记录请求中的 User-Agent 信息
+    - 允许为空
+    - 映射到数据库字段 user_agent
     """
 
     browser = fields.CharField(
         max_length=255,
         null=True,
-        description="Browser Type",
-        source_field="browser"
+        description="浏览器类型",
+        source_field="browser",
     )
     """
-    娴忚鍣ㄧ被鍨嬨?
-    - 璁板綍鐢ㄦ埛鐧诲綍鏃朵娇鐢ㄧ殑娴忚鍣ㄧ被鍨嬨?
-    - 鏈澶ч暱搴︿负 255 涓瓧绗︺?
-    - 鍏佽涓虹銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 browser銆?
+    浏览器类型。
+    - 记录发起操作时的浏览器类型
+    - 最大长度为 255 个字符
+    - 允许为空
+    - 映射到数据库字段 browser
     """
 
     os = fields.CharField(
         max_length=255,
         null=True,
-        description="鎿嶄綔绯荤粺",
-        source_field="os"
+        description="操作系统",
+        source_field="os",
     )
     """
-    鎿嶄綔绯荤粺銆?
-    - 璁板綍鐢ㄦ埛鐧诲綍鏃朵娇鐢ㄧ殑鎿嶄綔绯荤粺銆?
-    - 鏈澶ч暱搴︿负 255 涓瓧绗︺?
-    - 鍏佽涓虹銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 os銆?
+    操作系统。
+    - 记录发起操作时的操作系统
+    - 最大长度为 255 个字符
+    - 允许为空
+    - 映射到数据库字段 os
     """
 
     request_params = fields.TextField(
         null=True,
-        description="璇锋眰鍙傛暟",
-        source_field="request_params"
+        description="请求参数",
+        source_field="request_params",
     )
     """
-    璇锋眰鍙傛暟銆?
-    - 璁板綍鐢ㄦ埛璇锋眰鐨勫弬鏁帮紙浠绘剰鏍煎紡锛屽瀛楃涓层丣SON銆乆ML 绛夛級銆?
-    - 鍏佽涓虹銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 request_params銆?
+    请求参数。
+    - 记录请求参数，支持 JSON、XML 或普通文本
+    - 允许为空
+    - 映射到数据库字段 request_params
     """
 
     response_result = fields.TextField(
         null=True,
-        description="杩斿洖缁撴灉",
-        source_field="response_result"
+        description="返回结果",
+        source_field="response_result",
     )
     """
-    杩斿洖缁撴灉銆?
-    - 璁板綍鎿嶄綔鐨勮繑鍥炵粨鏋滐紙浠绘剰鏍煎紡锛屽瀛楃涓层丣SON銆乆ML 绛夛級銆?
-    - 鍏佽涓虹銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 response_result銆?
+    返回结果。
+    - 记录操作执行后的返回内容
+    - 允许为空
+    - 映射到数据库字段 response_result
     """
 
     status = fields.SmallIntField(
         default=1,
-        description="Operation Status (1 success, 0 failure)",
-        source_field="status"
+        description="操作状态（1 成功，0 失败）",
+        source_field="status",
     )
     """
-    鎿嶄綔鐘舵併?
-    - 1锛氭垚鍔?
-    - 0锛氬け璐?
-    - 榛樿涓?1銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 status銆?
+    操作状态。
+    - 1：成功
+    - 0：失败
+    - 默认值为 1
+    - 映射到数据库字段 status
     """
 
     cost_time = fields.FloatField(
         default=0,
-        description="Cost Time (ms)",
-        source_field="cost_time"
+        description="耗时（毫秒）",
+        source_field="cost_time",
     )
     """
-    娑堣楁椂闂淬?
-    - 璁板綍鎿嶄綔娑堣楃殑鏃堕棿锛堝崟浣嶏細姣锛夈?
-    - 榛樿涓?0銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 cost_time銆?
+    耗时。
+    - 记录操作执行耗时，单位为毫秒
+    - 默认值为 0
+    - 映射到数据库字段 cost_time
     """
 
     class Meta:

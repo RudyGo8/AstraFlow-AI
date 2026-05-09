@@ -1,83 +1,87 @@
-
 from .sa_orm import fields
 
 from .common import BaseModel
 
 
 class ConfigGroup:
-    """閰嶇疆鍒嗙粍甯搁噺"""
-    SYSTEM = "system"       # 绯荤粺鍩虹閰嶇疆
-    EMAIL = "email"         # 閭欢閰嶇疆
-    MAP = "map"             # 鍦板浘閰嶇疆
-    UPLOAD = "upload"       # 涓婁紶閰嶇疆
-    SECURITY = "security"   # 瀹夊叏閰嶇疆
-    ACCOUNT = "account"     # 璐埛閰嶇疆
+    """系统配置分组常量。"""
+
+    SYSTEM = "system"
+    EMAIL = "email"
+    MAP = "map"
+    UPLOAD = "upload"
+    SECURITY = "security"
+    ACCOUNT = "account"
 
 
 class SystemConfig(BaseModel):
-    """
-    绯荤粺閰嶇疆妯瀷
-    """
+    """系统配置模型。"""
+
     name = fields.CharField(
         max_length=100,
-        description="閰嶇疆鍚嶇О",
-        source_field="name"
+        description="配置名称",
+        source_field="name",
     )
     """
-    閰嶇疆鍚嶇О銆?
-    - 鏈澶ч暱搴︿负 100 涓瓧绗?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 name
+    配置名称。
+    - 最大长度为 100 个字符
+    - 映射到数据库字段 name
     """
+
     key = fields.CharField(
         max_length=100,
-        description="閰嶇疆閿悕",
-        source_field="key"
+        description="配置键名",
+        source_field="key",
     )
     """
-    閰嶇疆閿悕銆?
-    - 鏈澶ч暱搴︿负 100 涓瓧绗?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 key
+    配置键名。
+    - 最大长度为 100 个字符
+    - 映射到数据库字段 key
     """
+
     value = fields.TextField(
-        description="Config Value",
-        source_field="value"
+        description="配置值",
+        source_field="value",
     )
     """
-    閰嶇疆鍊笺?
-    - 浣跨敤 TextField 鏀寔闀挎枃鏈?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 value
+    配置值。
+    - 使用 TextField 支持长文本
+    - 映射到数据库字段 value
     """
+
     group = fields.CharField(
         max_length=50,
         default="system",
         null=True,
-        description="閰嶇疆鍒嗙粍",
-        source_field="group_name"
+        description="配置分组",
+        source_field="group_name",
     )
     """
-    閰嶇疆鍒嗙粍銆?
-    - 鐢ㄤ簬鍖哄垎涓嶅悓绫诲瀷鐨勯厤缃?
-    - 榛樿涓?system
-    - 鍙负绌猴紙鍏煎鏃ф暟鎹級
+    配置分组。
+    - 用于区分不同类型的配置
+    - 默认值为 system
+    - 允许为空，兼容旧数据
     """
+
     type = fields.BooleanField(
         default=False,
-        description="绯荤粺鍐呯疆",
-        source_field="type"
+        description="是否为系统内置配置",
+        source_field="type",
     )
     """
-    鏄惁涓虹郴缁熷唴缃?
-    - 榛樿涓轰笉鏄?
+    是否为系统内置配置。
+    - 默认值为 False
     """
+
     remark = fields.TextField(
         null=True,
-        description="澶囨敞",
-        source_field="remark"
+        description="备注",
+        source_field="remark",
     )
     """
-    澶囨敞淇伅銆?
-    - 鏈澶ч暱搴︿负 255 涓瓧绗?
-    - 鍙负绌?
+    备注信息。
+    - 最大长度为 255 个字符
+    - 允许为空
     """
 
     class Meta:

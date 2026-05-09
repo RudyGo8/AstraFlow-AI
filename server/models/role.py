@@ -1,4 +1,3 @@
-
 from .sa_orm import fields
 
 from .common import BaseModel
@@ -6,78 +5,77 @@ from .common import BaseModel
 
 class SystemRole(BaseModel):
     """
-    瑙掕壊琛ㄦā鍨嬨?
-    
-    鏉冮檺绠$悊璇存槑锛圕asbin 鏂规C锛夛細
-    - 瑙掕壊鏉冮檺瀹屽叏鐢?Casbin 绠$悊锛屼笉鍐嶄娇鐢ㄤ腑闂磋
-    - 鑿滃崟/鎸夐挳鏉冮檺: p, role_code, permission_id, menu|button
-    - API鏉冮檺: p, role_code, /api/path/*, GET|POST|...
-    - 鐢ㄦ埛-瑙掕壊鍏宠仈: g, user_id, role_code
+    角色模型。
+
+    权限管理基于 Casbin：
+    - 菜单/按钮权限：`p, role_code, permission_id, menu|button`
+    - API 权限：`p, role_code, /api/path/*, GET|POST|...`
+    - 用户与角色关联：`g, user_id, role_code`
     """
 
     name = fields.CharField(
         max_length=255,
-        description="瑙掕壊鍚嶇О",
-        source_field="role_name"
+        description="角色名称",
+        source_field="role_name",
     )
     """
-    瑙掕壊鍚嶇О銆?
-    - 鍏佽閲嶅锛屽洜涓轰笉鍚岄儴闂ㄥ彲鑳芥湁鐩稿悓鐨勮鑹插悕绉般?
-    - 鏈澶ч暱搴︿负 255 涓瓧绗︺?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 role_name銆?
+    角色名称。
+    - 允许重名，不同部门可以存在同名角色
+    - 最大长度为 255 个字符
+    - 映射到数据库字段 role_name
     """
 
     code = fields.CharField(
         max_length=255,
         unique=True,
-        description="瑙掕壊缂栫爜",
-        source_field="role_code"
+        description="角色编码",
+        source_field="role_code",
     )
     """
-    瑙掕壊缂栫爜銆?
-    - 鐢ㄤ簬绯荤粺鍐呴儴璇嗗埆瑙掕壊銆?
-    - 蹇呴』鍞竴銆?
-    - 鏈澶ч暱搴︿负 255 涓瓧绗︺?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 role_code銆?
+    角色编码。
+    - 用于系统内部唯一标识角色
+    - 必须唯一
+    - 最大长度为 255 个字符
+    - 映射到数据库字段 role_code
     """
 
     description = fields.CharField(
         max_length=255,
         null=True,
-        description="瑙掕壊鎻忚堪",
-        source_field="role_description"
+        description="角色描述",
+        source_field="role_description",
     )
     """
-    瑙掕壊鎻忚堪銆?
-    - 鏈澶ч暱搴︿负 255 涓瓧绗︺?
-    - 鍏佽涓虹銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 role_description銆?
+    角色描述。
+    - 最大长度为 255 个字符
+    - 允许为空
+    - 映射到数据库字段 role_description
     """
 
     status = fields.SmallIntField(
         default=1,
-        description="Role Status",
-        source_field="status"
+        description="角色状态",
+        source_field="status",
     )
     """
-    瑙掕壊鐘舵併?
-    - 1: 姝e父
-    - 0: 绂佺敤
-    - 鏄犲皠鍒版暟鎹簱瀛楁 status銆?
+    角色状态。
+    - 1：启用
+    - 0：禁用
+    - 映射到数据库字段 status
     """
 
     department = fields.ForeignKeyField(
         "system.SystemDepartment",
         related_name="roles",
         null=True,
-        description="Belongs To Department",
-        source_field="department_id"
+        description="所属部门",
+        source_field="department_id",
     )
     """
-    鎵灞為儴闂ㄣ?
-    - 琛ㄧず瑙掕壊鎵灞炵殑閮ㄩ棬銆?
-    - 濡傛灉涓?null锛屽垯琛ㄧず瑙掕壊鏄叏灞瑙掕壊銆?
-    - 鏄犲皠鍒版暟鎹簱瀛楁 department_id銆?
+    所属部门。
+    - 表示角色所属的部门
+    - 为 null 时表示全局角色
+    - 映射到数据库字段 department_id
     """
 
     class Meta:

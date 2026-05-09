@@ -1,80 +1,82 @@
-
-
 from .sa_orm import fields
 from .common import BaseModel
 
 
 class SystemDictionaryItem(BaseModel):
-    """
-    鏁版嵁瀛楀吀椤硅
-    """
+    """数据字典项模型。"""
 
     dictionary_id = fields.ForeignKeyField(
         "system.SystemDictionary",
         related_name="items",
         null=False,
-        description="鎵灞炲瓧鍏窱D",
+        description="所属字典 ID",
         source_field="dictionary_id",
-        on_delete=fields.CASCADE
+        on_delete=fields.CASCADE,
     )
     """
-    鎵灞炲瓧鍏窱D
+    所属字典 ID。
     """
+
     label = fields.CharField(
         max_length=100,
         null=False,
-        description="Dictionary Item Label",
-        source_field="label"
+        description="字典项标签",
+        source_field="label",
     )
     """
-    瀛楀吀椤规爣绛?
+    字典项标签。
     """
+
     value = fields.CharField(
         max_length=100,
         null=False,
-        description="Dictionary Item Value",
-        source_field="value"
+        description="字典项值",
+        source_field="value",
     )
     """
-    瀛楀吀椤瑰?
+    字典项值。
     """
+
     status = fields.IntField(
         null=False,
         default=1,
-        description="Status (1 enabled, 0 disabled)",
-        source_field="status"
+        description="状态（1 启用，0 禁用）",
+        source_field="status",
     )
     """
-    鐘舵侊紙1鍚敤锛?绂佺敤锛?
+    状态。
     """
+
     sort = fields.IntField(
         null=False,
         default=0,
-        description="Sort Order (smaller is higher)",
-        source_field="sort"
+        description="排序值，数值越小越靠前",
+        source_field="sort",
     )
     """
-    鎺掑簭锛堟暟瀛楄秺灏忚秺闈犲墠锛?
+    排序值。
     """
+
     tag_color = fields.CharField(
         max_length=50,
         null=True,
-        description="鏍囩棰滆壊",
-        source_field="tag_color"
+        description="标签颜色",
+        source_field="tag_color",
     )
     """
-    鏍囩棰滆壊
+    标签颜色。
     """
+
     remark = fields.TextField(
         null=True,
-        description="澶囨敞",
-        source_field="remark"
+        description="备注",
+        source_field="remark",
     )
     """
-    澶囨敞
+    备注。
     """
 
     class Meta:
         table = "system_dictionary_item"
-        table_description = "鏁版嵁瀛楀吀椤硅"
+        table_description = "数据字典项表"
         ordering = ["sort", "-created_at"]
