@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 日报</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8f9fa; color: #333; padding: 32px 40px; max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 26px; margin-bottom: 8px; color: #1a1a2e; }
+  .date { color: #888; font-size: 13px; margin-bottom: 24px; }
+  .card { background: #fff; border-radius: 10px; padding: 20px 24px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.06); border-left: 4px solid #5D87FF; }
+  .card h3 { font-size: 17px; margin-bottom: 6px; color: #1a1a2e; }
+  .card p { font-size: 14px; line-height: 1.7; color: #555; }
+  .card .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-right: 6px; background: #eef2ff; color: #5D87FF; }
+  .placeholder { text-align: center; padding: 60px 20px; color: #aaa; }
+  .placeholder h2 { color: #ccc; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+  <h1>🤖 AI 日报</h1>
+  <div class="date" id="date"></div>
+
+  <div class="placeholder">
+    <h2>📰 日报预览</h2>
+    <p>此页面由 <strong>AI_Daily_Paper</strong> 项目自动生成</p>
+    <p style="margin-top:8px;font-size:12px;">请运行 <code>python main.py</code> 生成最新日报文件</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">大模型</span>
+    <h3>示例：AI 大模型最新进展</h3>
+    <p>运行 AI_Daily_Paper 生成真实日报后，此处将展示每日精选 AI 资讯，涵盖大模型、AI 应用、开源工具、行业政策等领域。</p>
+  </div>
+
+  <script>
+    document.getElementById('date').textContent = new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'long', day:'numeric', weekday:'long' })
+  </script>
+</body>
+</html>
